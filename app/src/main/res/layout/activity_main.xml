@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="nestedternary.project.MainActivity">
+
+    <fragment
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        tools:layout="@layout/activity_main">
+        <Button
+            android:id="@+id/nearest_bin"
+            android:text="nearest_bin"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:onClick="near_bin" />
+        <Button
+            android:id="@+id/directions_btn"
+            android:text="directions"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="@id/nearest_bin"
+            android:textSize="20dp"
+            android:onClick="get_directions" />
+    </fragment>
+</LinearLayout>
