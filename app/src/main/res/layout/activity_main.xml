@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,21 +32,26 @@
             android:layout_alignParentTop="@id/nearest_bin"
             android:textSize="20dp"
             android:onClick="get_directions" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <Button
+                android:id="@+id/add_donate_qty_btn"
+                android:text="Tell us how many bags of clothing you donated"
+                android:textColor="#ffffff"
+                android:textAllCaps="false"
+                android:textAlignment="center"
+                android:layout_width="280dp"
+                android:layout_height="53dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_pink" />
+        </RelativeLayout>
     </fragment>
 
-    <Button
-        android:id="@+id/add_donate_qty_btn"
-        android:text="Tell us how many bags of clothing you donated"
-        android:textColor="#ffffff"
-        android:textAllCaps="false"
-        android:textAlignment="center"
-        android:layout_width="280dp"
-        android:layout_height="53dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/button_pink" />
-    
-</RelativeLayout>
+
+
+</LinearLayout>
