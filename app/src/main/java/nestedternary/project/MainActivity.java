@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     map.setMyLocationEnabled(true);
 
-                    map.getUiSettings().setMapToolbarEnabled(false);
+                    map.getUiSettings().setMapToolbarEnabled(true);
                     LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
                     // Create a criteria object to retrieve provider
