@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -51,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
     // private ArrayList<PolylineOptions> route;
     private PolylineOptions route;
     private Location cur_location;
+    private Button add_donate_qty_btn;
+    private Marker donateMarker;
+    private boolean donateButtonVisibility;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Override
@@ -58,7 +63,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        markers = new ArrayList<>();
+        markers                = new ArrayList<>();
+        add_donate_qty_btn     = (Button) findViewById (R.id.add_donate_qty_btn);
+        donateButtonVisibility = false;
+        add_donate_qty_btn.setVisibility (View.GONE);
 
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -162,6 +170,14 @@ public class MainActivity extends AppCompatActivity {
                     // System.exit(1);
                 }
             }
+        }
+    }
+
+    public void donateQty (final View view) {
+        if (donateMarker != null) {
+            Intent intent = new Intent (MainActivity.this, Donate.class);
+            intent.putExtra ("binName", donateMarker.getSnippet());
+            startActivity (intent);
         }
     }
 
@@ -307,17 +323,16 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCameraChange (CameraPosition cameraPosition) {
-
-                    final float zoom_lvl = cameraPosition.zoom;
-
-                    runOnUiThread (new Runnable (){
-                        public void run () {
-                            // Toast.makeText (getApplicationContext (), "Zoom LVL is : " + zoom_lvl, Toast.LENGTH_SHORT).show ();
-                        }
-                    });
-
                     opts.setWidth (cameraPosition.zoom < 13 ? 10 : 4);
+                }
 
+            });
+
+            map.setOnCameraMoveStartedListener (new GoogleMap.OnCameraMoveStartedListener () {
+
+                @Override
+                public void onCameraMoveStarted (int reason) {
+                    add_donate_qty_btn.setVisibility (View.GONE);
                 }
             });
         }
@@ -342,6 +357,7 @@ public class MainActivity extends AppCompatActivity {
                     final int index = get_closest_bin();
                     if (index != -1)
                         markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+
                     runOnUiThread (new Runnable () {
                         public void run () {
                             for (MarkerOptions mo : markers)
@@ -356,6 +372,36 @@ public class MainActivity extends AppCompatActivity {
 
                                 new DownloadTask().execute (url);
                             }
+                        }
+                    });
+
+                /* need to add this to select maker in future maybe??
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        //here turn off the overlays for nav turns etc.
+                        marker.hideInfoWindow();
+                    } */
+
+                    runOnUiThread (new Runnable () {
+                        public void run () {
+                            map.setOnMapClickListener (new GoogleMap.OnMapClickListener() {
+                                public void onMapClick (LatLng latlng) {
+                                    add_donate_qty_btn.setVisibility (View.GONE);
+                                }
+                            });
+
+                            // FASTER AND map toolbar
+
+                            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                @Override
+                                public boolean onMarkerClick(Marker arg0) {
+                                    donateMarker = arg0;
+                                    arg0.showInfoWindow ();
+                                    map.animateCamera (CameraUpdateFactory.newLatLng(arg0.getPosition ()), 400, null);
+                                    add_donate_qty_btn.setVisibility (View.VISIBLE);
+                                    return true;
+                                }
+                            });
                         }
                     });
                 }
