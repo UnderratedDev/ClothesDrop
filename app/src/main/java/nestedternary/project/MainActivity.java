@@ -186,28 +186,6 @@ public class MainActivity extends AppCompatActivity {
         return index;
     }
 
-    public void get_directions (final View view) {
-        int index = get_closest_bin();
-        if (index != -1) {
-            LatLng latLng = markers.get(index).getPosition();
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&daddr=" + latLng.latitude + "," + latLng.longitude));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
-            startActivity(intent);
-        }
-    }
-
-    public void near_bin (final View view) {
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        map.setMyLocationEnabled(true);
-        int index = get_closest_bin ();
-        if (index != -1)
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(index).getPosition(), 7));
-    }
-
     private String get_directions_url (LatLng origin, LatLng dest){
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude, str_dest = "destination=" + dest.latitude + "," + dest.longitude, sensor = "sensor=false", parameters = str_origin + "&" + str_dest + "&" + sensor;
