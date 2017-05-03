@@ -24,8 +24,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
     private GoogleMap map;
     private ArrayList<MarkerOptions> markers;
+    // private ArrayList<PolylineOptions> route;
+    private PolylineOptions route;
     private Location cur_location;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
@@ -199,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         map.setMyLocationEnabled(true);
         int index = get_closest_bin ();
         if (index != -1)
-            map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(index).getPosition(), 13));
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(index).getPosition(), 7));
     }
 
     private String get_directions_url (LatLng origin, LatLng dest){
@@ -295,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<LatLng> points;
             PolylineOptions lineOptions = null;
 
-            for(int i=0;i<result.size(); ++i){
+            for(int i=0;i<result.size(); ++i) {
                 points = new ArrayList<LatLng>();
                 lineOptions = new PolylineOptions();
 
@@ -311,11 +317,31 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 lineOptions.addAll(points);
-                lineOptions.width(2);
-                lineOptions.color(Color.RED);
+                lineOptions.width(4);
+                lineOptions.color(Color.BLUE);
             }
 
-            map.addPolyline(lineOptions);
+            route = lineOptions;
+
+            final Polyline opts = map.addPolyline(lineOptions);
+
+            map.setOnCameraChangeListener (new GoogleMap.OnCameraChangeListener() {
+
+                @Override
+                public void onCameraChange (CameraPosition cameraPosition) {
+
+                    final float zoom_lvl = cameraPosition.zoom;
+
+                    runOnUiThread (new Runnable (){
+                        public void run () {
+                            // Toast.makeText (getApplicationContext (), "Zoom LVL is : " + zoom_lvl, Toast.LENGTH_SHORT).show ();
+                        }
+                    });
+
+                    opts.setWidth (cameraPosition.zoom < 13 ? 10 : 4);
+
+                }
+            });
         }
     }
 
@@ -333,35 +359,33 @@ public class MainActivity extends AppCompatActivity {
                 markers.add(bin);
                 markers.add(sydney);
                 markers.add(home);
-                    runOnUiThread(new Runnable() {
-                        public void run() {
+
+                if (map != null) {
+                    final int index = get_closest_bin();
+                    if (index != -1)
+                        markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                    runOnUiThread (new Runnable () {
+                        public void run () {
                             for (MarkerOptions mo : markers)
                                 map.addMarker(mo);
+
+                            if (index != -1) {
+                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(index).getPosition(), 13));
+                                final Location location = cur_location;
+
+                                LatLng cur = new LatLng (location.getLatitude(), location.getLongitude()), latLng = markers.get (index).getPosition();
+                                String url = get_directions_url(cur, latLng);
+
+                                new DownloadTask().execute (url);
+                            }
                         }
                     });
                 }
+            }
             return null;
         }
 
         protected void onPostExecute (Void results) {
-            if (map != null) {
-                final int index = get_closest_bin();
-                runOnUiThread (new Runnable () {
-                    public void run () {
-                        if (index != -1) {
-                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(index).getPosition(), 13));
-                            final Location location = cur_location;
-
-                            LatLng cur = new LatLng (location.getLatitude(), location.getLongitude()), latLng = markers.get (index).getPosition();
-                            String url = get_directions_url(cur, latLng);
-
-                            // Toast.makeText (getBaseContext (), url, Toast.LENGTH_SHORT).show ();
-
-                            new DownloadTask().execute (url);
-                        }
-                    }
-                });
-            }
         }
     }
 
