@@ -35,7 +35,12 @@ public class Donate extends AppCompatActivity {
     }
 
     public void submtiQty (final View view) {
+        // Maybe check for max??
         final String qty_str = ((EditText)findViewById (R.id.donate_qty)).getText().toString();
+
+        if (qty_str.isEmpty())
+            return;
+
         final int qty        = Integer.parseInt (qty_str);
 
         editor.putInt ("qty", qty);
