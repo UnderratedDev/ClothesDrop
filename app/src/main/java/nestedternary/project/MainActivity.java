@@ -210,6 +210,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void get_directions (final View view) {
+        int index = get_closest_bin();
+        if (index != -1) {
+            LatLng latLng = markers.get(index).getPosition();
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&daddr=" + latLng.latitude + "," + latLng.longitude));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+            startActivity(intent);
+        }
+    }
+
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -409,8 +421,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        protected void onPostExecute (Void results) {
-        }
+        protected void onPostExecute (Void results) { }
     }
 
 }
