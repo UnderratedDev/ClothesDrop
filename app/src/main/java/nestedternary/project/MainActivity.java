@@ -37,6 +37,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -45,6 +49,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -191,6 +197,38 @@ public class MainActivity extends AppCompatActivity {
         return index;
     }
 
+    // Parses the local kml in the assets folder for testing
+    private void parseKML () {
+        try {
+
+            // PlaceMark
+
+            String line;
+
+            BufferedReader br = new BufferedReader (new InputStreamReader(getAssets().open ("PosAbilities.kml")));
+
+            while ((line = br.readLine()) != null)
+                if (line.contains ("<coordinates>")) {
+                    line = br.readLine ();
+
+                    String[] l_coords = line.split (",");
+
+                    for (int i = 0; i < l_coords.length; ++i)
+                        l_coords[i] = l_coords[i].replaceAll("\\s+","");
+
+                    if (l_coords[0].isEmpty () || l_coords[1].isEmpty())
+                        continue;
+
+                    double latitude = Double.parseDouble (l_coords[1]), longitutde = Double.parseDouble (l_coords[0]);
+
+                    markers.add (new MarkerOptions ().title ("BIN parsed").snippet ("BIN parsed").position (new LatLng (latitude, longitutde)));
+                }
+
+        } catch (Exception ex) {
+            ex.printStackTrace ();
+        }
+
+    }
 
     // When map is clicked, do not show donate bin qty button
     private void mapClickListener () {
@@ -214,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     // Creates and returns the directions url
     private String get_directions_url (LatLng origin, LatLng dest){
@@ -348,16 +385,18 @@ public class MainActivity extends AppCompatActivity {
 
             route = lineOptions;
 
-            final Polyline opts = map.addPolyline(lineOptions);
+            if (lineOptions != null) {
+                final Polyline opts = map.addPolyline(lineOptions);
 
-            map.setOnCameraChangeListener (new GoogleMap.OnCameraChangeListener() {
+                map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 
-                @Override
-                public void onCameraChange (CameraPosition cameraPosition) {
-                    opts.setWidth (cameraPosition.zoom < 13 ? 10 : 4);
-                }
+                    @Override
+                    public void onCameraChange(CameraPosition cameraPosition) {
+                        opts.setWidth(cameraPosition.zoom < 13 ? 10 : 4);
+                    }
 
-            });
+                });
+            }
 
             map.setOnCameraMoveStartedListener (new GoogleMap.OnCameraMoveStartedListener () {
 
@@ -376,6 +415,7 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground (final Void... params) {
             if (map != null) {
                 markers = new ArrayList<>();
+                /*
                 final MarkerOptions bin = new MarkerOptions()
                         .title("bin")
                         .snippet("closest bin")
@@ -384,7 +424,9 @@ public class MainActivity extends AppCompatActivity {
                 home   = new MarkerOptions().title ("Near Home").snippet("Near Yudhvir's House").position (new LatLng(49.2205977, -122.934911));
                 markers.add(bin);
                 markers.add(sydney);
-                markers.add(home);
+                markers.add(home); */
+                parseKML ();
+                Log.d ("HERE", "ABC");
 
                 if (map != null) {
                     final int index = get_closest_bin();
