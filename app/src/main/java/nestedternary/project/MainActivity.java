@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -53,9 +54,11 @@ public class MainActivity extends AppCompatActivity {
     // private ArrayList<PolylineOptions> route;
     private PolylineOptions route;
     private Location cur_location;
-    private Button add_donate_qty_btn;
+    private ImageButton add_donate_qty_btn;
+    private ImageButton directions_btn;
     private Marker donateMarker;
     private boolean donateButtonVisibility;
+    private boolean directionsButtonVisibility;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Override
@@ -64,9 +67,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         markers                = new ArrayList<>();
-        add_donate_qty_btn     = (Button) findViewById (R.id.add_donate_qty_btn);
+        add_donate_qty_btn     = (ImageButton) findViewById (R.id.add_donate_qty_btn);
+        directions_btn         = (ImageButton) findViewById (R.id.directions_btn);
         donateButtonVisibility = false;
+        directionsButtonVisibility = false;
         add_donate_qty_btn.setVisibility (View.GONE);
+        directions_btn.setVisibility(View.GONE);
 
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -345,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCameraMoveStarted (int reason) {
                     add_donate_qty_btn.setVisibility (View.GONE);
+                    directions_btn.setVisibility (View.GONE);
                 }
             });
         }
@@ -399,6 +406,7 @@ public class MainActivity extends AppCompatActivity {
                             map.setOnMapClickListener (new GoogleMap.OnMapClickListener() {
                                 public void onMapClick (LatLng latlng) {
                                     add_donate_qty_btn.setVisibility (View.GONE);
+                                    directions_btn.setVisibility (View.GONE);
                                 }
                             });
 
@@ -411,6 +419,7 @@ public class MainActivity extends AppCompatActivity {
                                     arg0.showInfoWindow ();
                                     map.animateCamera (CameraUpdateFactory.newLatLng(arg0.getPosition ()), 400, null);
                                     add_donate_qty_btn.setVisibility (View.VISIBLE);
+                                    directions_btn.setVisibility (View.VISIBLE);
                                     return true;
                                 }
                             });
