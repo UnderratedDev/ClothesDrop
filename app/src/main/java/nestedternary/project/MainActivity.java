@@ -215,6 +215,13 @@ public class MainActivity extends AppCompatActivity {
         return index;
     }
 
+    private int getBin (MarkerOptions mo) {
+        for (int i = 0; i < markers.size (); ++i)
+            if (markers.get(i).getPosition () == mo.getPosition())
+                return i;
+        return -1;
+    }
+
     // Parses the local kml in the assets folder for testing
     private void parseKML () {
         try {
@@ -284,6 +291,15 @@ public class MainActivity extends AppCompatActivity {
 
     // mapped to directions button, intent is made for google maps application and then opens the application using the location data we posses
     public void get_directions (final View view) {
+        if (donateMarker != null) {
+            LatLng latLng = donateMarker.getPosition();
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&daddr=" + latLng.latitude + "," + latLng.longitude));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+            startActivity(intent);
+        }
+        /*
         int index = get_closest_bin();
         if (index != -1) {
             LatLng latLng = markers.get(index).getPosition();
@@ -292,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
             startActivity(intent);
-        }
+        } */
     }
 
     // Opens up the url to download the poly line information
