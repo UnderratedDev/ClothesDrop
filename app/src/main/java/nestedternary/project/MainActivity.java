@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton directions_btn;
     private TextView net_status_textview;
     private Marker donateMarker;
+    private MarkerOptions closestMarker;
     private boolean donateButtonVisibility;
     private boolean directionsButtonVisibility;
     private boolean netStatusTextviewVisibility;
@@ -215,6 +216,13 @@ public class MainActivity extends AppCompatActivity {
         return index;
     }
 
+    private int getBin (MarkerOptions mo) {
+        for (int i = 0; i < markers.size (); ++i)
+            if (markers.get(i).getPosition () == mo.getPosition())
+                return i;
+        return -1;
+    }
+
     // Parses the local kml in the assets folder for testing
     private void parseKML () {
         try {
@@ -239,7 +247,31 @@ public class MainActivity extends AppCompatActivity {
 
                     double latitude = Double.parseDouble (l_coords[1]), longitutde = Double.parseDouble (l_coords[0]);
 
-                    markers.add (new MarkerOptions ().title ("BIN parsed").snippet ("BIN parsed").position (new LatLng (latitude, longitutde)));
+                    markers.add (new MarkerOptions ().title ("Bin").snippet ("BIN parsed").position (new LatLng (latitude, longitutde)));
+                }
+
+            int index = 0;
+
+            br.close();
+            br = new BufferedReader (new InputStreamReader(getAssets().open ("PosAbilities.kml")));
+
+            while ((line = br.readLine()) != null)
+                if (line.contains ("<Placemark>")) {
+                    line = br.readLine ();
+
+                    line = line.replace ("<name>", "");
+                    line = line.replace ("</name>", "");
+
+                    if (line.contains ("<![CDATA[")) {
+                        line = line.replace ("<![CDATA[","");
+                        line = line.replace ("]]>", "");
+                    }
+
+                    line = line.replaceAll ("\\s*Bin\\s*[0-9]+\\s*-\\s*", "");
+
+                    line = line.trim ();
+
+                    markers.get (index++).snippet (line);
                 }
 
         } catch (Exception ex) {
@@ -263,8 +295,14 @@ public class MainActivity extends AppCompatActivity {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker arg0) {
+                if (donateMarker != null)
+                    if (donateMarker.getPosition().equals(closestMarker.getPosition()))
+                        donateMarker.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_VIOLET));
+                    else
+                        donateMarker.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_RED));
                 donateMarker = arg0;
                 arg0.showInfoWindow ();
+                arg0.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_GREEN));
                 map.animateCamera (CameraUpdateFactory.newLatLng(arg0.getPosition ()), 400, null);
                 add_donate_qty_btn.setVisibility (View.VISIBLE);
                 directions_btn.setVisibility (View.VISIBLE);
@@ -284,6 +322,15 @@ public class MainActivity extends AppCompatActivity {
 
     // mapped to directions button, intent is made for google maps application and then opens the application using the location data we posses
     public void get_directions (final View view) {
+        if (donateMarker != null) {
+            LatLng latLng = donateMarker.getPosition();
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&daddr=" + latLng.latitude + "," + latLng.longitude));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
+            startActivity(intent);
+        }
+        /*
         int index = get_closest_bin();
         if (index != -1) {
             LatLng latLng = markers.get(index).getPosition();
@@ -292,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
             startActivity(intent);
-        }
+        } */
     }
 
     // Opens up the url to download the poly line information
@@ -451,8 +498,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (map != null) {
                     final int index = get_closest_bin();
-                    if (index != -1)
+                    if (index != -1) {
                         markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                        closestMarker = markers.get (index);
+                    }
 
                     runOnUiThread (new Runnable () {
                         public void run () {
@@ -466,7 +515,8 @@ public class MainActivity extends AppCompatActivity {
                                 LatLng cur = new LatLng (location.getLatitude(), location.getLongitude()), latLng = markers.get (index).getPosition();
                                 String url = get_directions_url(cur, latLng);
 
-                                new DownloadTask().execute (url);
+                                if (checkNetworkConnection ())
+                                    new DownloadTask().execute (url);
                             } else
                                 map.moveCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(49.2290040, -123.0412511), 10));
                         }
@@ -497,6 +547,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute (Void results) { }
     }
 
+    private boolean checkNetworkConnection () {
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext ().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -515,14 +573,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            /*
             ConnectivityManager cm =
                     (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
+                    activeNetwork.isConnectedOrConnecting(); */
 
-            net_status_textview.setVisibility(isConnected ? View.INVISIBLE : View.VISIBLE);
+            net_status_textview.setVisibility(checkNetworkConnection () ? View.INVISIBLE : View.VISIBLE);
         }
     };
 
