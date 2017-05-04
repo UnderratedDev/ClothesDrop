@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton directions_btn;
     private TextView net_status_textview;
     private Marker donateMarker;
+    private MarkerOptions closestMarker;
     private boolean donateButtonVisibility;
     private boolean directionsButtonVisibility;
     private boolean netStatusTextviewVisibility;
@@ -246,7 +247,31 @@ public class MainActivity extends AppCompatActivity {
 
                     double latitude = Double.parseDouble (l_coords[1]), longitutde = Double.parseDouble (l_coords[0]);
 
-                    markers.add (new MarkerOptions ().title ("BIN parsed").snippet ("BIN parsed").position (new LatLng (latitude, longitutde)));
+                    markers.add (new MarkerOptions ().title ("Bin").snippet ("BIN parsed").position (new LatLng (latitude, longitutde)));
+                }
+
+            int index = 0;
+
+            br.close();
+            br = new BufferedReader (new InputStreamReader(getAssets().open ("PosAbilities.kml")));
+
+            while ((line = br.readLine()) != null)
+                if (line.contains ("<Placemark>")) {
+                    line = br.readLine ();
+
+                    line = line.replace ("<name>", "");
+                    line = line.replace ("</name>", "");
+
+                    if (line.contains ("<![CDATA[")) {
+                        line = line.replace ("<![CDATA[","");
+                        line = line.replace ("]]>", "");
+                    }
+
+                    line = line.replaceAll ("\\s*Bin\\s*[0-9]+\\s*-\\s*", "");
+
+                    line = line.trim ();
+
+                    markers.get (index++).snippet (line);
                 }
 
         } catch (Exception ex) {
@@ -270,8 +295,14 @@ public class MainActivity extends AppCompatActivity {
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker arg0) {
+                if (donateMarker != null)
+                    if (donateMarker.getPosition().equals(closestMarker.getPosition()))
+                        donateMarker.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_VIOLET));
+                    else
+                        donateMarker.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_RED));
                 donateMarker = arg0;
                 arg0.showInfoWindow ();
+                arg0.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_GREEN));
                 map.animateCamera (CameraUpdateFactory.newLatLng(arg0.getPosition ()), 400, null);
                 add_donate_qty_btn.setVisibility (View.VISIBLE);
                 directions_btn.setVisibility (View.VISIBLE);
@@ -467,8 +498,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (map != null) {
                     final int index = get_closest_bin();
-                    if (index != -1)
+                    if (index != -1) {
                         markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                        closestMarker = markers.get (index);
+                    }
 
                     runOnUiThread (new Runnable () {
                         public void run () {
