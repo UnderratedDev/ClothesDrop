@@ -44,10 +44,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:weightSum="1"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="5dp"
+                android:layout_above="@+id/net_status_textview">
 
                 <ImageButton
                     android:id="@+id/add_donate_qty_btn"
@@ -62,6 +62,17 @@
                     android:onClick="donateQty"/>
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/net_status_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#FF9B30"
+                android:text="No network connection. Map shown may be oudated."
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:visibility="invisible"/>
 
         </RelativeLayout>
 
