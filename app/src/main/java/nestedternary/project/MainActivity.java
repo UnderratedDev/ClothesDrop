@@ -49,6 +49,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private GoogleMap map;
+    private SupportMapFragment mapFragment;
     private ArrayList<MarkerOptions> markers;
     // private ArrayList<PolylineOptions> route;
     private PolylineOptions route;
@@ -74,59 +75,70 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map_view);
+        mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map_view);
 
         if (check_location_permission())
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        else {
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(GoogleMap googleMap) {
-                    map = googleMap;
-
-                    // check_location_permission method does not work here???
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    map.setMyLocationEnabled(true);
-
-                    map.getUiSettings().setMapToolbarEnabled(true);
-                    LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-                    // Create a criteria object to retrieve provider
-                    Criteria criteria = new Criteria();
-
-                    // Get the name of the best provider
-
-                    String provider = locationManager.getBestProvider(criteria, true);
-                    // Get Current Location
-                    cur_location = locationManager.getLastKnownLocation(provider);
-
-                    // Can use above code when needed or use this.
-                    // Below is more battery taxing but is more immediate
-                    map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-                        @Override
-                        public void onMyLocationChange(Location location) {
-                            cur_location = location;
-                        }
-                    });
-                    new AsyncTaskRunnerFetch().execute();
-                }
-            });
-        }
+        else
+            createMap ();
     }
+
+    // Check for location permission (FINE AND COARSE) and returns true if permission has not been granted
     private boolean check_location_permission () {
         return (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED);
     }
 
+    // Uses an anonymous inner class to implement the map
+    // Creates the map,
+    // Has a listener which constantly updates the cur location private variable at the top
+    // Executes the background task that fetches the data and then calculates the closest marker
+    private void createMap () {
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+
+                // check_location_permission method does not work here???
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                    return;
+
+                map.setMyLocationEnabled(true);
+
+                map.getUiSettings().setMapToolbarEnabled(true);
+                LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+                // Create a criteria object to retrieve provider
+                Criteria criteria = new Criteria();
+
+                // Get the name of the best provider
+
+                String provider = locationManager.getBestProvider(criteria, true);
+                // Get Current Location
+                cur_location = locationManager.getLastKnownLocation(provider);
+
+                // Can use above code when needed or use this.
+                // Below is more battery taxing but is more immediate
+                map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+                    @Override
+                    public void onMyLocationChange(Location location) {
+                        cur_location = location;
+                    }
+                });
+                new AsyncTaskRunnerFetch().execute();
+            }
+        });
+    }
+
+    // Depending on which permission has been granted, different actions occur, i.e for location, the map is initialised
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                    createMap ();
+                else {
 
                     SupportMapFragment mapFragment = (SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.map_view);
 
@@ -135,44 +147,20 @@ public class MainActivity extends AppCompatActivity {
                         public void onMapReady(GoogleMap googleMap) {
                             map = googleMap;
 
-                            // check_location_permission method does not work here???
-                            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                return;
-                            }
-                            map.setMyLocationEnabled(true);
+                            map.getUiSettings().setMapToolbarEnabled(true);
 
-                            map.getUiSettings().setMapToolbarEnabled(false);
-                            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-                            // Create a criteria object to retrieve provider
-                            Criteria criteria = new Criteria();
-
-                            // Get the name of the best provider
-
-                            String provider = locationManager.getBestProvider(criteria, true);
-                            // Get Current Location
-                            cur_location = locationManager.getLastKnownLocation(provider);
-
-                            // Can use above code when needed or use this.
-                            // Below is more battery taxing but is more immediate
-                            map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-                                @Override
-                                public void onMyLocationChange(Location location) {
-                                    cur_location = location;
-                                }
-                            });
                             new AsyncTaskRunnerFetch().execute();
                         }
                     });
 
-                } else {
-                    Toast.makeText (getApplicationContext(), "App does not have required permissions to function", Toast.LENGTH_LONG).show ();
+                    // Toast.makeText (getApplicationContext(), "App does not have required permissions to function", Toast.LENGTH_LONG).show ();
                     // System.exit(1);
                 }
             }
         }
     }
 
+    // Starts the donation page, passes the snippet so that the donation page may use it to complete the sentence
     public void donateQty (final View view) {
         if (donateMarker != null) {
             Intent intent = new Intent (MainActivity.this, Donate.class);
@@ -181,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Calculates the closest bin relative to cur user position/location
     private int get_closest_bin () {
         int index = -1;
         float minDistance = Float.MAX_VALUE;
@@ -191,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             Location target = new Location ("target");
             for (int i = 1; i < markers.size(); ++i) {
                 LatLng temp = markers.get (i).getPosition ();
-                target.setLatitude (temp.latitude);
+                target.setLatitude  (temp.latitude);
                 target.setLongitude (temp.longitude);
                 if (location.distanceTo (target) < minDistance) {
                     minDistance = location.distanceTo(target);
@@ -202,6 +191,32 @@ public class MainActivity extends AppCompatActivity {
         return index;
     }
 
+
+    // When map is clicked, do not show donate bin qty button
+    private void mapClickListener () {
+        map.setOnMapClickListener (new GoogleMap.OnMapClickListener() {
+            public void onMapClick (LatLng latlng) {
+                add_donate_qty_btn.setVisibility (View.GONE);
+            }
+        });
+    }
+
+    // When marker has been clicked, show donate qty button and simulate default action
+    private void markerClickListener () {
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker arg0) {
+                donateMarker = arg0;
+                arg0.showInfoWindow ();
+                map.animateCamera (CameraUpdateFactory.newLatLng(arg0.getPosition ()), 400, null);
+                add_donate_qty_btn.setVisibility (View.VISIBLE);
+                return true;
+            }
+        });
+    }
+
+
+    // Creates and returns the directions url
     private String get_directions_url (LatLng origin, LatLng dest){
 
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude, str_dest = "destination=" + dest.latitude + "," + dest.longitude, sensor = "sensor=false", parameters = str_origin + "&" + str_dest + "&" + sensor;
@@ -210,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    // mapped to directions button, intent is made for google maps application and then opens the application using the location data we posses
     public void get_directions (final View view) {
         int index = get_closest_bin();
         if (index != -1) {
@@ -222,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Opens up the url to download the poly line information
     private String downloadUrl(String strUrl) throws IOException {
         String data = "";
         InputStream iStream = null;
@@ -257,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // Uses the downloadUrl method to get the data and returns it
     private class DownloadTask extends AsyncTask<String, Void, String>{
 
         @Override
@@ -282,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Uses the DirectionsJSONParser to populate the routes with the necessary information to populate the polyline for the user
     private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String,String>>>> {
 
         @Override
@@ -350,6 +369,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Fetches the data and calls teh get_closest_bin method to calculate the nearest bin.
+    // Overrides the on marker click listener to show and hide the donate qty button when required.
     private class AsyncTaskRunnerFetch extends AsyncTask<Void, Void, Void> {
 
         protected Void doInBackground (final Void... params) {
@@ -368,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
                 if (map != null) {
                     final int index = get_closest_bin();
                     if (index != -1)
-                        markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                        markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
 
                     runOnUiThread (new Runnable () {
                         public void run () {
@@ -383,7 +404,8 @@ public class MainActivity extends AppCompatActivity {
                                 String url = get_directions_url(cur, latLng);
 
                                 new DownloadTask().execute (url);
-                            }
+                            } else
+                                map.moveCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(49.2290040, -123.0412511), 10));
                         }
                     });
 
@@ -396,24 +418,12 @@ public class MainActivity extends AppCompatActivity {
 
                     runOnUiThread (new Runnable () {
                         public void run () {
-                            map.setOnMapClickListener (new GoogleMap.OnMapClickListener() {
-                                public void onMapClick (LatLng latlng) {
-                                    add_donate_qty_btn.setVisibility (View.GONE);
-                                }
-                            });
 
+                            mapClickListener ();
                             // FASTER AND map toolbar
 
-                            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                                @Override
-                                public boolean onMarkerClick(Marker arg0) {
-                                    donateMarker = arg0;
-                                    arg0.showInfoWindow ();
-                                    map.animateCamera (CameraUpdateFactory.newLatLng(arg0.getPosition ()), 400, null);
-                                    add_donate_qty_btn.setVisibility (View.VISIBLE);
-                                    return true;
-                                }
-                            });
+                            markerClickListener ();
+
                         }
                     });
                 }
