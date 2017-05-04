@@ -216,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
         return index;
     }
 
+    // Returns the index of a bin in the markers list
     private int getBin (MarkerOptions mo) {
         for (int i = 0; i < markers.size (); ++i)
             if (markers.get(i).getPosition () == mo.getPosition())
@@ -223,56 +224,75 @@ public class MainActivity extends AppCompatActivity {
         return -1;
     }
 
+    // ALL KML RELATED CODE WILL BE MOVED SERVER SIDE
+    private void getCoordsFromKML () {
+        try {
+            String line;
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(getAssets().open("PosAbilities.kml")));
+
+            while ((line = br.readLine()) != null)
+                if (line.contains("<coordinates>")) {
+                    line = br.readLine();
+
+                    String[] l_coords = line.split(",");
+
+                    for (int i = 0; i < l_coords.length; ++i)
+                        l_coords[i] = l_coords[i].replaceAll("\\s+", "");
+
+                    if (l_coords[0].isEmpty() || l_coords[1].isEmpty())
+                        continue;
+
+                    double latitude = Double.parseDouble(l_coords[1]), longitutde = Double.parseDouble(l_coords[0]);
+
+                    markers.add(new MarkerOptions().title("Bin").snippet("BIN parsed").position(new LatLng(latitude, longitutde)));
+                }
+        } catch (IOException ex) {
+            ex.printStackTrace ();
+        }
+    }
+
+    // ALL KML RELATED CODE WILL BE MOVED SERVER SIDE
+    private void getSnippetFromKML () {
+        try {
+
+            String line;
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(getAssets().open("PosAbilities.kml")));
+
+            int index = 0;
+
+            while ((line = br.readLine()) != null)
+                if (line.contains("<Placemark>")) {
+                    line = br.readLine();
+
+                    line = line.replace("<name>", "");
+                    line = line.replace("</name>", "");
+
+                    if (line.contains("<![CDATA[")) {
+                        line = line.replace("<![CDATA[", "");
+                        line = line.replace("]]>", "");
+                    }
+
+                    line = line.replaceAll("\\s*Bin\\s*[0-9]+\\s*-\\s*", "");
+
+                    line = line.trim();
+
+                    markers.get(index++).snippet(line);
+                }
+        } catch (IOException ex) {
+            ex.printStackTrace ();
+        }
+
+    }
+
+    // ALL KML RELATED CODE WILL BE MOVED SERVER SIDE
     // Parses the local kml in the assets folder for testing
     private void parseKML () {
         try {
 
-            // PlaceMark
-
-            String line;
-
-            BufferedReader br = new BufferedReader (new InputStreamReader(getAssets().open ("PosAbilities.kml")));
-
-            while ((line = br.readLine()) != null)
-                if (line.contains ("<coordinates>")) {
-                    line = br.readLine ();
-
-                    String[] l_coords = line.split (",");
-
-                    for (int i = 0; i < l_coords.length; ++i)
-                        l_coords[i] = l_coords[i].replaceAll("\\s+","");
-
-                    if (l_coords[0].isEmpty () || l_coords[1].isEmpty())
-                        continue;
-
-                    double latitude = Double.parseDouble (l_coords[1]), longitutde = Double.parseDouble (l_coords[0]);
-
-                    markers.add (new MarkerOptions ().title ("Bin").snippet ("BIN parsed").position (new LatLng (latitude, longitutde)));
-                }
-
-            int index = 0;
-
-            br.close();
-            br = new BufferedReader (new InputStreamReader(getAssets().open ("PosAbilities.kml")));
-
-            while ((line = br.readLine()) != null)
-                if (line.contains ("<Placemark>")) {
-                    line = br.readLine ();
-
-                    line = line.replace ("<name>", "");
-                    line = line.replace ("</name>", "");
-
-                    if (line.contains ("<![CDATA[")) {
-                        line = line.replace ("<![CDATA[","");
-                        line = line.replace ("]]>", "");
-                    }
-
-                    line = line.replaceAll ("\\s*Bin\\s*[0-9]+\\s*-\\s*", "");
-
-                    line = line.trim ();
-
-                    markers.get (index++).snippet (line);
-                }
+            getCoordsFromKML ();
+            getSnippetFromKML ();
 
         } catch (Exception ex) {
             ex.printStackTrace ();

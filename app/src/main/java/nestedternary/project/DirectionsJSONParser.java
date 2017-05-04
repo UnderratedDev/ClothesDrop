@@ -23,15 +23,16 @@ public class DirectionsJSONParser {
 
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
         JSONArray jRoutes = null;
-        JSONArray jLegs = null;
-        JSONArray jSteps = null;
+        JSONArray jLegs   = null;
+        JSONArray jSteps  = null;
 
         try {
 
             jRoutes = jObject.getJSONArray("routes");
 
 
-            for(int i=0;i<jRoutes.length();i++){
+            for(int i=0;i<jRoutes.length();i++) {
+                Log.e ("Woof", jRoutes.get(i).toString ());
                 jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<HashMap<String, String>>();
 
