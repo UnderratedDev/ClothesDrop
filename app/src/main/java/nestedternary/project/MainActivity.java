@@ -466,7 +466,8 @@ public class MainActivity extends AppCompatActivity {
                                 LatLng cur = new LatLng (location.getLatitude(), location.getLongitude()), latLng = markers.get (index).getPosition();
                                 String url = get_directions_url(cur, latLng);
 
-                                new DownloadTask().execute (url);
+                                if (checkNetworkConnection ())
+                                    new DownloadTask().execute (url);
                             } else
                                 map.moveCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(49.2290040, -123.0412511), 10));
                         }
@@ -497,6 +498,14 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute (Void results) { }
     }
 
+    private boolean checkNetworkConnection () {
+        ConnectivityManager cm =
+                (ConnectivityManager)getApplicationContext ().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -515,14 +524,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
+            /*
             ConnectivityManager cm =
                     (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
             boolean isConnected = activeNetwork != null &&
-                    activeNetwork.isConnectedOrConnecting();
+                    activeNetwork.isConnectedOrConnecting(); */
 
-            net_status_textview.setVisibility(isConnected ? View.INVISIBLE : View.VISIBLE);
+            net_status_textview.setVisibility(checkNetworkConnection () ? View.INVISIBLE : View.VISIBLE);
         }
     };
 
