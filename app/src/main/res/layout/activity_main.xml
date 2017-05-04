@@ -17,28 +17,65 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/add_donate_qty_btn"
-                android:text="Tell us how many bags of clothing you donated"
-                android:textColor="#ffffff"
-                android:textAllCaps="false"
-                android:textAlignment="center"
-                android:layout_width="280dp"
-                android:layout_height="53dp"
-                android:layout_alignParentBottom="true"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/button_pink"
-                android:visibility="gone"
-                android:onClick="donateQty"/>
+                android:layout_marginTop="10dp">
+
+                <ImageButton
+                    android:id="@+id/directions_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.40"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/button_directions"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:visibility="gone"
+                    android:onClick="get_directions"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_above="@+id/net_status_textview">
+
+                <ImageButton
+                    android:id="@+id/add_donate_qty_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.70"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/button_add_donate_qty"
+                    android:adjustViewBounds="true"
+                    android:background="@android:color/transparent"
+                    android:visibility="gone"
+                    android:onClick="donateQty"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/net_status_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="#FF9B30"
+                android:text="No network connection. Map shown may be oudated."
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:visibility="invisible"/>
+
         </RelativeLayout>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="directions"
-            android:onClick="get_directions" />
     </fragment>
 
 

@@ -2,8 +2,11 @@ package nestedternary.project;
 
 import android.Manifest;
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -11,6 +14,8 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +24,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,9 +67,13 @@ public class MainActivity extends AppCompatActivity {
     // private ArrayList<PolylineOptions> route;
     private PolylineOptions route;
     private Location cur_location;
-    private Button add_donate_qty_btn;
+    private ImageButton add_donate_qty_btn;
+    private ImageButton directions_btn;
+    private TextView net_status_textview;
     private Marker donateMarker;
     private boolean donateButtonVisibility;
+    private boolean directionsButtonVisibility;
+    private boolean netStatusTextviewVisibility;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     @Override
@@ -71,9 +82,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         markers                = new ArrayList<>();
-        add_donate_qty_btn     = (Button) findViewById (R.id.add_donate_qty_btn);
+        add_donate_qty_btn     = (ImageButton) findViewById (R.id.add_donate_qty_btn);
+        directions_btn         = (ImageButton) findViewById (R.id.directions_btn);
+        net_status_textview    = (TextView)    findViewById (R.id.net_status_textview);
         donateButtonVisibility = false;
+        directionsButtonVisibility = false;
+        netStatusTextviewVisibility= false;
         add_donate_qty_btn.setVisibility (View.GONE);
+        directions_btn.setVisibility(View.GONE);
+        net_status_textview.setVisibility(View.INVISIBLE);
 
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -235,6 +252,7 @@ public class MainActivity extends AppCompatActivity {
         map.setOnMapClickListener (new GoogleMap.OnMapClickListener() {
             public void onMapClick (LatLng latlng) {
                 add_donate_qty_btn.setVisibility (View.GONE);
+                directions_btn.setVisibility (View.GONE);
             }
         });
     }
@@ -248,6 +266,7 @@ public class MainActivity extends AppCompatActivity {
                 arg0.showInfoWindow ();
                 map.animateCamera (CameraUpdateFactory.newLatLng(arg0.getPosition ()), 400, null);
                 add_donate_qty_btn.setVisibility (View.VISIBLE);
+                directions_btn.setVisibility (View.VISIBLE);
                 return true;
             }
         });
@@ -403,6 +422,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCameraMoveStarted (int reason) {
                     add_donate_qty_btn.setVisibility (View.GONE);
+                    directions_btn.setVisibility (View.GONE);
                 }
             });
         }
@@ -475,5 +495,34 @@ public class MainActivity extends AppCompatActivity {
 
         protected void onPostExecute (Void results) { }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(networkStateReceiver, filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(networkStateReceiver);
+    }
+
+    private BroadcastReceiver networkStateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            ConnectivityManager cm =
+                    (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            boolean isConnected = activeNetwork != null &&
+                    activeNetwork.isConnectedOrConnecting();
+
+            net_status_textview.setVisibility(isConnected ? View.INVISIBLE : View.VISIBLE);
+        }
+    };
 
 }
