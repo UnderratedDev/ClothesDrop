@@ -197,11 +197,12 @@ public class MainActivity extends AppCompatActivity {
         int index = -1;
         float minDistance = Float.MAX_VALUE;
         final Location location = cur_location;
-        if (location == null)
+        if (location == null || markers.isEmpty())
             return index;
+
         if (0 < markers.size ()) {
             Location target = new Location ("target");
-            for (int i = 1; i < markers.size(); ++i) {
+            for (int i = 0; i < markers.size(); ++i) {
                 LatLng temp = markers.get (i).getPosition ();
                 target.setLatitude  (temp.latitude);
                 target.setLongitude (temp.longitude);
