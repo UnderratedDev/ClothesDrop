@@ -1,0 +1,566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>PosAbilities</name>
+    <description/>
+    <Style id="icon-503-3F5BA9-normal">
+      <IconStyle>
+        <color>ffa95b3f</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-503-3F5BA9-highlight">
+      <IconStyle>
+        <color>ffa95b3f</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1.1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-503-3F5BA9">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-503-3F5BA9-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-503-3F5BA9-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-503-7C3592-nodesc-normal">
+      <IconStyle>
+        <color>ff92357c</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-503-7C3592-nodesc-highlight">
+      <IconStyle>
+        <color>ff92357c</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1.1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-503-7C3592-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-503-7C3592-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-503-7C3592-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-503-DB4436-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-503-DB4436-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1.1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-503-DB4436">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-503-DB4436-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-503-DB4436-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Style id="icon-503-DB4436-nodesc-normal">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <Style id="icon-503-DB4436-nodesc-highlight">
+      <IconStyle>
+        <color>ff3644db</color>
+        <scale>1.1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1.1</scale>
+      </LabelStyle>
+      <BalloonStyle>
+        <text><![CDATA[<h3>$[name]</h3>]]></text>
+      </BalloonStyle>
+    </Style>
+    <StyleMap id="icon-503-DB4436-nodesc">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-503-DB4436-nodesc-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-503-DB4436-nodesc-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Folder>
+      <name>Untitled layer</name>
+      <Placemark>
+        <name>Bin 1-7025 Macdonald St</name>
+        <description>Bin 1</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1684546,49.2216976,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 2 - 3589 Adanac St,</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0260476,49.2773834,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 3 - 1750 Nanaimo St</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0564317,49.268852,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 4-Clarendon St & Waverley Ave]]></name>
+        <description>Bin 4</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0560303,49.2268544,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 5-East 16th and watson</name>
+        <description>16th and watson</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1004796,49.2562116,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 6 - Lougheed hwy and Skeena St</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0284147,49.2639259,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 7 - East Kent & Aquitania Place]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0456211,49.2064339,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 8 - 8075 Enterprise St</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -122.9296249,49.2564812,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 9-Douglas Rd & Halifax St]]></name>
+        <description>Bin 9</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0103423,49.2680042,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 11 - Victoria and Stainsbury Ave</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.065173,49.2514812,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 12 - W 59th & Heather st]]></name>
+        <description><![CDATA[West 59th St. & Heather St., Vancouver, BC]]></description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1238336,49.2170772,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 14 - Hastings & Windemere
+]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0360429,49.2806535,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 15-7731 Nanaimo St</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0597938,49.2140461,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 16 - Boundary & East 28th
+]]></name>
+        <description><![CDATA[Boundary & East 28th Ave., Vancouver, BC]]></description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.024264,49.2452821,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 17-898 W Broadway</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1237912,49.2631548,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 18 - 1184 West 57th Ave., Vancouver
+</name>
+        <description>1184 West 57th Ave., Vancouver, BC</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1318595,49.2193219,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 19 - 1st ave East</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0435652,49.2693561,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 20 - E 43rd Ave & Beatrice St]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0671069,49.2306643,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 21 - 1409 Sperling Ave</name>
+        <description>DSRF</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -122.964953,49.271316,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 22-230 Ross Dr</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -122.8987268,49.2127808,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 23-E Hastings St & Clare Ave]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -122.9634605,49.2803447,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 24 - 1420 Pinetree Way</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -122.7854186,49.3004701,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 25 - 7355 Morley St, Burnaby, BC</name>
+        <description>Morley Elementary School</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -122.9572248,49.2261881,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 28-3173 MacDonald St, Vancouver</name>
+        <description>3173 MacDonald St., Vancouver, BC</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1685164,49.2580288,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 29 - W 41st & Larch St]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1626995,49.2349843,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 30 - Victoria Dr & Brigadoon Ave]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.065794,49.2165661,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 31 - Durward ave & St Catherines st]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.085936,49.2408326,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 32 - Carolina St & E 24th Ave]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0920842,49.2492402,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 33-Quebec St & E 37th Ave]]></name>
+        <description>Bin 33</description>
+        <styleUrl>#icon-503-DB4436</styleUrl>
+        <Point>
+          <coordinates>
+            -123.1035542,49.2372737,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 34 - SE Marine Dr & Crompton St
+]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.080864,49.2106009,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 35 - W 39th and Willow</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.123676,49.2357855,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 36 - SE Marine Dr & Victoria dr]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0660548,49.2092328,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Bin 37 - Fraser St & 49th Ave, Vancouver
+]]></name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0902785,49.2255557,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 38 - 945 Lytton St., North Vancouver
+</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0001402,49.3135792,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Mini Bin - 33 Commercial Dr, Vancouver, BC V5L 0A2</name>
+        <styleUrl>#icon-503-7C3592-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0711045,49.2840301,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Mini Bin - PosAbilities head office</name>
+        <styleUrl>#icon-503-7C3592-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -122.9980776,49.2657725,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name><![CDATA[Fortius Sport & Health]]></name>
+        <description>First wed of the month</description>
+        <styleUrl>#icon-503-3F5BA9</styleUrl>
+        <Point>
+          <coordinates>
+            -122.9673681,49.2514947,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Edmonds Community School</name>
+        <description>First week of every month </description>
+        <styleUrl>#icon-503-3F5BA9</styleUrl>
+        <Point>
+          <coordinates>
+            -122.9410366,49.2223706,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>4405 Central Blvd</name>
+        <description>Once a month</description>
+        <styleUrl>#icon-503-3F5BA9</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0038286,49.2268052,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Monique</name>
+        <description>once a month </description>
+        <styleUrl>#icon-503-3F5BA9</styleUrl>
+        <Point>
+          <coordinates>
+            -123.019361,49.2369873,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bungo Box</name>
+        <description>Will Call</description>
+        <styleUrl>#icon-503-3F5BA9</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0939388,49.2096645,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>Bin 26 - 1170 27th St, North Van</name>
+        <styleUrl>#icon-503-DB4436-nodesc</styleUrl>
+        <Point>
+          <coordinates>
+            -123.0408803,49.3342851,0
+          </coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>
