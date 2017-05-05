@@ -70,5 +70,8 @@ public class GetBinInstrumentedTest {
 
         testPoint = new MarkerOptions().position(new LatLng(0.0, 200.0));
         assertEquals(-1 , getBin.invoke(activity, testPoint));
+
+        testPoint = new MarkerOptions().position(new LatLng(-2.0, -42.0));
+        assertEquals(4 , getBin.invoke(activity, testPoint));
     }
 }
