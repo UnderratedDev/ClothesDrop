@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         donateButtonVisibility = false;
         directionsButtonVisibility = false;
         netStatusTextviewVisibility= false;
-        add_donate_qty_btn.setVisibility (View.GONE);
+        add_donate_qty_btn.setVisibility (View.INVISIBLE);
         directions_btn.setVisibility(View.GONE);
         net_status_textview.setVisibility(View.INVISIBLE);
 
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
     private void mapClickListener () {
         map.setOnMapClickListener (new GoogleMap.OnMapClickListener() {
             public void onMapClick (LatLng latlng) {
-                add_donate_qty_btn.setVisibility (View.GONE);
+                add_donate_qty_btn.setVisibility (View.INVISIBLE);
                 directions_btn.setVisibility (View.GONE);
             }
         });
@@ -489,7 +489,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCameraMoveStarted (int reason) {
-                    add_donate_qty_btn.setVisibility (View.GONE);
+                    add_donate_qty_btn.setVisibility (View.INVISIBLE);
                     directions_btn.setVisibility (View.GONE);
                 }
             });
