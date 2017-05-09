@@ -193,6 +193,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Starts the main schefuling page
+    public void schedulingPage (final View view) {
+        //Add and if for when we have login system
+        Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
+        startActivity (intent);
+
+    }
+
     // Calculates the closest bin relative to cur user position/location
     private int get_closest_bin () {
         int index = -1;
