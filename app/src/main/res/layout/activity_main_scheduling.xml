@@ -53,7 +53,8 @@
             android:visibility="visible"
             app:srcCompat="@drawable/button_request_pickup"
             tools:layout_editor_absoluteX="2dp"
-            tools:layout_editor_absoluteY="83dp" />
+            tools:layout_editor_absoluteY="83dp"
+            android:onClick="schedulingDetails"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
