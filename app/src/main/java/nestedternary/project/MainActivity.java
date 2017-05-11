@@ -82,6 +82,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*
+            Creates a new intent to start the BackendPullService
+            IntentService. Passes a URI in the
+            Intents's "data" field
+        */
+
+        Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
+        mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/androidsendjson.php"));
+        startService (mServiceIntent);
+
         markers                = new ArrayList<>();
         add_donate_qty_btn     = (ImageButton) findViewById (R.id.add_donate_qty_btn);
         directions_btn         = (ImageButton) findViewById (R.id.directions_btn);
@@ -232,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         return -1;
     }
 
+    /*
     // ALL KML RELATED CODE WILL BE MOVED SERVER SIDE
     private void getCoordsFromKML () {
         try {
@@ -306,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
             ex.printStackTrace ();
         }
 
-    }
+    } */
 
     // When map is clicked, do not show donate bin qty button
     private void mapClickListener () {
@@ -521,7 +532,7 @@ public class MainActivity extends AppCompatActivity {
                 markers.add(bin);
                 markers.add(sydney);
                 markers.add(home); */
-                parseKML ();
+                // parseKML ();
                 Log.d ("HERE", "ABC");
 
                 if (map != null) {
