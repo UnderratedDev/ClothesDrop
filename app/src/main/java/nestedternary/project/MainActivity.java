@@ -40,6 +40,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONObject;
 
@@ -536,7 +538,23 @@ public class MainActivity extends AppCompatActivity {
                                 String url = get_directions_url(cur, latLng);
 
                                 if (checkNetworkConnection ())
-                                    new DownloadTask().execute (url);
+                                    //new DownloadTask().execute (url);
+                                    Ion.with(getApplicationContext()).
+                                            load(url).
+                                            asString()
+                                            .setCallback(
+                                                    new FutureCallback<String>() {
+                                                        @Override
+                                                        public void onCompleted(Exception e, String result) {
+                                                            if (e != null) {
+                                                                // error handling goes here
+                                                            } else {
+                                                                ParserTask parserTask = new ParserTask();
+                                                                parserTask.execute(result);
+                                                            }
+                                                        }
+                                                    }
+                                            );
                             } else
                                 map.moveCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(49.2290040, -123.0412511), 10));
                         }
