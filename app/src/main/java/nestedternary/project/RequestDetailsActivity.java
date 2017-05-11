@@ -8,6 +8,7 @@ import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -50,6 +51,12 @@ public class RequestDetailsActivity extends AppCompatActivity {
     public void cancel(final View view) {
         Toast.makeText (getApplicationContext (), "HERE", Toast.LENGTH_LONG).show ();
         finish();
+    }
+
+    public void callUs(final View view){
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:7782584377"));
+        startActivity(intent);
     }
 
 

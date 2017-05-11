@@ -89,7 +89,8 @@
             android:background="@android:color/transparent"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/button_call_us_instead" />
+            app:srcCompat="@drawable/button_call_us_instead"
+            android:onClick="callUs"/>
     </LinearLayout>
 
 </LinearLayout>
