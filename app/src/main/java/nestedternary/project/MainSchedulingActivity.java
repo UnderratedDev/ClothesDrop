@@ -45,7 +45,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
         Intent intent = new Intent (MainSchedulingActivity.this, RequestDetailsActivity.class);
 
-        if(regionInfo.size() == 0)
+        if(regionInfo.isEmpty())
         {
             Toast.makeText(MainSchedulingActivity.this,
                     "Error with connection please try again",
@@ -65,7 +65,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
     {
         Log.e("MEOW", "button");
         locationRequest(view);
-        regionRequest(view);
+        // regionRequest(view);
 
     }
 
@@ -127,8 +127,9 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
                                             address = temp.get("formatted_address").toString();
                                             location = true;
-                                            if(region && location)
-                                                schedulingDetails(view, ListRegions);
+                                            //if(region && location)
+                                               // schedulingDetails(view, ListRegions);
+                                            regionRequest(view);
                                         }
                                         catch (Exception e)
                                         {
@@ -180,9 +181,9 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                         name              = nameElement.getAsString();
                                         ListRegions.add(name);
                                     }
-                                    region = true;
-                                    if(region && location)
-                                        schedulingDetails(view, ListRegions);
+                                    //region = true;
+                                    //if(region && location)
+                                    schedulingDetails(view, ListRegions);
                                 }
 
                             }

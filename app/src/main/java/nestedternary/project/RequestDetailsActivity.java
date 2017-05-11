@@ -40,20 +40,15 @@ public class RequestDetailsActivity extends AppCompatActivity {
         Spinner regions = (Spinner)findViewById(R.id.spinner);
         ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, regionList);
 
-
-
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         TextView location = (TextView)findViewById(R.id.location);
         regions.setAdapter(adapter);
         if(location != null)
             location.setText(address);
-
-
-
-
     }
 
-    public void cancel(View view){
+    public void cancel(final View view) {
+        Toast.makeText (getApplicationContext (), "HERE", Toast.LENGTH_LONG).show ();
         finish();
     }
 
