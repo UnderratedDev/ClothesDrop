@@ -22,6 +22,6 @@ public class BackendPullService extends IntentService {
     @Override
     protected void onHandleIntent (Intent workIntent) {
         String dataString = workIntent.getDataString ();
-        Log.d ("Background Serrvice", dataString);
+        Log.d ("Background Service", dataString);
     }
 }
