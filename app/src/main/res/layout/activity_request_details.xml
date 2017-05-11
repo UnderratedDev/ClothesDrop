@@ -18,16 +18,15 @@
         android:layout_marginBottom="10dp"
         />
 
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        android:cropToPadding="false"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/button_choose_location"
-        android:layout_marginBottom="10dp"
-        />
+    <EditText
+        android:id="@+id/location"
+        android:layout_width="258dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Location"
+        android:textAlignment="center" />
 
     <Spinner
         android:id="@+id/spinner"
@@ -50,11 +49,10 @@
         android:id="@+id/imageButton6"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
         android:background="@android:color/transparent"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/button_number_of_bags"
-        android:layout_marginBottom="10dp"
-        />
+        app:srcCompat="@drawable/button_number_of_bags" />
 
     <ImageButton
         android:id="@+id/imageButton7"
@@ -75,6 +73,7 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/button_cancel"
         android:layout_marginBottom="10dp"
+        android:onClick="cancel"
         />
 
     <LinearLayout
