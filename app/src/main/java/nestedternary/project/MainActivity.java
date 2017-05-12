@@ -229,7 +229,9 @@ public class MainActivity extends AppCompatActivity {
     // Starts the main schefuling page
     public void schedulingPage (final View view) {
         //Add and if for when we have login system
-        Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
+//        Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
+        // TEMPORARY, change back later
+        Intent intent = new Intent (MainActivity.this, LoginActivity.class);
         startActivity (intent);
 
     }
