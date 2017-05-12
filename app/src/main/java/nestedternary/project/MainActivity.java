@@ -19,6 +19,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -79,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean netStatusTextviewVisibility;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
+    private BackendPullServiceReceiver backendReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,19 @@ public class MainActivity extends AppCompatActivity {
         Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
         mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/androidsendjson.php"));
         startService (mServiceIntent);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_ACTION);
+        backendReceiver = new BackendPullServiceReceiver();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
+
+//        registerReceiver(new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Log.d("hello", "world");
+//            }
+//        }, intentFilter);
 
         markers                = new ArrayList<>();
         add_donate_qty_btn     = (ImageButton) findViewById (R.id.add_donate_qty_btn);
@@ -634,4 +650,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private class BackendPullServiceReceiver extends BroadcastReceiver {
+
+        private BackendPullServiceReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+        }
+    }
 }

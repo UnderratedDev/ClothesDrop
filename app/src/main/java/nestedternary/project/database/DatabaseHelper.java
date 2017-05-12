@@ -3,6 +3,7 @@ package nestedternary.project.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import org.greenrobot.greendao.database.Database;
 
@@ -75,6 +76,11 @@ public class DatabaseHelper {
         return data;
     }
 
+    public void createBinLocationsFromArray (BinLocations[] arr) {
+        Log.e ("DBHELPER", " " + arr.length);
+        binLocationsDao.insertInTx (arr);
+    }
+
     public BinLocations getBinLocationFromCursor(final Cursor cursor) {
         final BinLocations binLocation;
 
@@ -102,6 +108,6 @@ public class DatabaseHelper {
     }
 
     public void deleteAll() {
-        db.execSQL("delete from " + "BinLocations");
+        db.execSQL("delete from " + "BIN_LOCATIONS");
     }
 }
