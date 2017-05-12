@@ -19,6 +19,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,6 +62,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import nestedternary.project.database.DatabaseHelper;
+import nestedternary.project.database.schema.BinLocations;
+
 public class MainActivity extends AppCompatActivity {
 
     private GoogleMap map;
@@ -74,10 +78,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView net_status_textview;
     private Marker donateMarker;
     private MarkerOptions closestMarker;
-    private boolean donateButtonVisibility;
-    private boolean directionsButtonVisibility;
-    private boolean netStatusTextviewVisibility;
+    private boolean donateButtonVisibility, directionsButtonVisibility, netStatusTextviewVisibility;
+    private DatabaseHelper helper;
+    private Cursor binCursor;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
+    private BackendPullServiceReceiver backendReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +99,12 @@ public class MainActivity extends AppCompatActivity {
         Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
         mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/androidsendjson.php"));
         startService (mServiceIntent);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_ACTION);
+        backendReceiver = new BackendPullServiceReceiver();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
 
         markers                = new ArrayList<>();
         add_donate_qty_btn     = (ImageButton) findViewById (R.id.add_donate_qty_btn);
@@ -118,6 +130,15 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         else
             createMap ();
+    }
+
+    private void setupDb () {
+        helper = DatabaseHelper.getInstance (this);
+        helper.openDatabaseForReading       (this);
+    }
+
+    private void closeDb () {
+        helper.close ();
     }
 
     // Check for location permission (FINE AND COARSE) and returns true if permission has not been granted
@@ -162,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
                         cur_location = location;
                     }
                 });
-                new AsyncTaskRunnerFetch().execute();
+                // new AsyncTaskRunnerFetch().execute();
             }
         });
     }
@@ -185,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
 
                             map.getUiSettings().setMapToolbarEnabled(true);
 
-                            new AsyncTaskRunnerFetch().execute();
+                            // new AsyncTaskRunnerFetch().execute();
                         }
                     });
 
@@ -243,83 +264,6 @@ public class MainActivity extends AppCompatActivity {
                 return i;
         return -1;
     }
-
-    /*
-    // ALL KML RELATED CODE WILL BE MOVED SERVER SIDE
-    private void getCoordsFromKML () {
-        try {
-            String line;
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(getAssets().open("PosAbilities.kml")));
-
-            while ((line = br.readLine()) != null)
-                if (line.contains("<coordinates>")) {
-                    line = br.readLine();
-
-                    String[] l_coords = line.split(",");
-
-                    for (int i = 0; i < l_coords.length; ++i)
-                        l_coords[i] = l_coords[i].replaceAll("\\s+", "");
-
-                    if (l_coords[0].isEmpty() || l_coords[1].isEmpty())
-                        continue;
-
-                    double latitude = Double.parseDouble(l_coords[1]), longitutde = Double.parseDouble(l_coords[0]);
-
-                    markers.add(new MarkerOptions().title("Bin").snippet("BIN parsed").position(new LatLng(latitude, longitutde)));
-                }
-        } catch (IOException ex) {
-            ex.printStackTrace ();
-        }
-    }
-
-    // ALL KML RELATED CODE WILL BE MOVED SERVER SIDE
-    private void getSnippetFromKML () {
-        try {
-
-            String line;
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(getAssets().open("PosAbilities.kml")));
-
-            int index = 0;
-
-            while ((line = br.readLine()) != null)
-                if (line.contains("<Placemark>")) {
-                    line = br.readLine();
-
-                    line = line.replace("<name>", "");
-                    line = line.replace("</name>", "");
-
-                    if (line.contains("<![CDATA[")) {
-                        line = line.replace("<![CDATA[", "");
-                        line = line.replace("]]>", "");
-                    }
-
-                    line = line.replaceAll("\\s*Bin\\s*[0-9]+\\s*-\\s*", "");
-
-                    line = line.trim();
-
-                    markers.get(index++).snippet(line);
-                }
-        } catch (IOException ex) {
-            ex.printStackTrace ();
-        }
-
-    }
-
-    // ALL KML RELATED CODE WILL BE MOVED SERVER SIDE
-    // Parses the local kml in the assets folder for testing
-    private void parseKML () {
-        try {
-
-            getCoordsFromKML ();
-            getSnippetFromKML ();
-
-        } catch (Exception ex) {
-            ex.printStackTrace ();
-        }
-
-    } */
 
     // When map is clicked, do not show donate bin qty button
     private void mapClickListener () {
@@ -517,32 +461,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void extractCursorData () {
+        setupDb ();
+        markers = new ArrayList<>();
+        for (binCursor.moveToFirst(); !binCursor.isAfterLast (); binCursor.moveToNext ()) {
+            final BinLocations binLocation = helper.getBinLocationFromCursor (binCursor);
+            markers.add (new MarkerOptions ()
+                        .title (binLocation.getName ())
+                        .snippet (binLocation.getAddress ())
+                        .position (new LatLng (binLocation.getLatitude (), binLocation.getLongtitude ())));
+        }
+    }
+
     // Fetches the data and calls teh get_closest_bin method to calculate the nearest bin.
     // Overrides the on marker click listener to show and hide the donate qty button when required.
     private class AsyncTaskRunnerFetch extends AsyncTask<Void, Void, Void> {
 
         protected Void doInBackground (final Void... params) {
             if (map != null) {
-                markers = new ArrayList<>();
-                /*
-                final MarkerOptions bin = new MarkerOptions()
-                        .title("bin")
-                        .snippet("closest bin")
-                        .position(new LatLng(100, 255)),
-                sydney = new MarkerOptions().title("Sydney").snippet("The most populous city in Australia.").position (new LatLng(-33.867, 151.206)),
-                home   = new MarkerOptions().title ("Near Home").snippet("Near Yudhvir's House").position (new LatLng(49.2205977, -122.934911));
-                markers.add(bin);
-                markers.add(sydney);
-                markers.add(home); */
-                // parseKML ();
-                Log.d ("HERE", "ABC");
-
-                if (map != null) {
-                    final int index = get_closest_bin();
-                    if (index != -1) {
-                        markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-                        closestMarker = markers.get (index);
-                    }
+                extractCursorData ();
+                final int index = get_closest_bin();
+                if (index != -1) {
+                    markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                    closestMarker = markers.get (index);
 
                     runOnUiThread (new Runnable () {
                         public void run () {
@@ -642,4 +583,38 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private class BackendPullServiceReceiver extends BroadcastReceiver {
+
+        private BackendPullServiceReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
+            if (status == Constants.STATE_ACTION_COMPLETE)
+                getLoaderManager ().initLoader (0, null, new MainActivity.MarkersLoaderCallbacks ());
+
+        }
+    }
+
+    private class MarkersLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
+        @Override
+        public Loader<Cursor> onCreateLoader(final int    id,
+                                             final Bundle args)
+        {
+            return new CursorLoader(MainActivity.this, BinContentProvider.GET_BINS_URI, null, null, null, null);
+        }
+
+        @Override
+        public void onLoadFinished(final Loader<Cursor> loader,
+                                   final Cursor         data)
+        {
+            binCursor = data;
+            new AsyncTaskRunnerFetch ().execute();
+        }
+
+        @Override
+        public void onLoaderReset(final Loader<Cursor> loader) { }
+    }
 }
