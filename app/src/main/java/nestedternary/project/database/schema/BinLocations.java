@@ -67,8 +67,4 @@ public class BinLocations {
         this.longtitude = longtitude;
     }
 
-    public String toString () {
-        return "name : " + name + " address " + address + " lat : " + latitude + " long : " + longtitude;
-    }
-
 }

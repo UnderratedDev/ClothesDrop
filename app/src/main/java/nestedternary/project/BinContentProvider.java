@@ -15,19 +15,19 @@ import nestedternary.project.database.DatabaseHelper;
 
 public class BinContentProvider extends ContentProvider{
     private static final UriMatcher uriMatcher;
-    private static final int GET_BINS_URI = 1;
-    public static final Uri CONTENT_URI;
+    private static final int GET_BINS_URI_INT = 1;
+    public static final Uri GET_BINS_URI;
     private DatabaseHelper helper;
 
     static
     {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI("nestedternary.project.daodatabase", "BinLocations", GET_BINS_URI);
+        uriMatcher.addURI("nestedternary.project.database.schema", "BinLocations", GET_BINS_URI_INT);
     }
 
     static
     {
-        CONTENT_URI = Uri.parse("content://comp3717.bcit.ca.daodatabase/names");
+        GET_BINS_URI = Uri.parse ("content://nestedternary.project.database.schema/BinLocations");
     }
 
     @Override
@@ -49,7 +49,7 @@ public class BinContentProvider extends ContentProvider{
 
         switch (uriMatcher.match(uri))
         {
-            case GET_BINS_URI:
+            case GET_BINS_URI_INT:
             {
                 final SQLiteDatabase db;
 
@@ -74,7 +74,7 @@ public class BinContentProvider extends ContentProvider{
 
         switch(uriMatcher.match(uri))
         {
-            case GET_BINS_URI:
+            case GET_BINS_URI_INT:
                 type = "vnd.android.cursor.dir/vnd.nestedternary.project.daodatabase.schema.BinLocations";
                 break;
             default:

@@ -28,6 +28,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDRZfPRiuRg7W9Ydx0EuBO51dtxKu9UPAM" />
 
+        <provider
+            android:name=".BinContentProvider"
+            android:authorities="nestedternary.project.database.schema"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity android:name=".Donate" />
         <activity android:name=".SplashActivity">
             <intent-filter>

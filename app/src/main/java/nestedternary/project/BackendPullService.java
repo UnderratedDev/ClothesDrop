@@ -25,7 +25,7 @@ public class BackendPullService extends IntentService {
 
     private DatabaseHelper helper;
     private ArrayList<BinLocations> binLocations;
-    private int status = 0;
+    // private int status = 0;
 
     private BroadcastNotifier broadcaster = new BroadcastNotifier(this);
 
@@ -98,15 +98,13 @@ public class BackendPullService extends IntentService {
                                         binLocations.add (new BinLocations (null, name, address, latitude, longtitude));
                                     }
                                     insertIntoDatabase ();
-                                    getAll ();
+                                    // getAll ();
                                     helper.close ();
-                                    status = 1;
-
-
-                                    broadcaster.broadcastIntentWithState(0);
+                                    //status = 1;
                                 }
                             }
                         }
                 );
+        broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
     }
 }

@@ -20,6 +20,7 @@ public class BroadcastNotifier {
 
         Intent intent = new Intent();
         intent.setAction(Constants.BROADCAST_ACTION);
+        intent.putExtra (Constants.EXTENDED_DATA_STATUS, status);
 
         broadcastManager.sendBroadcast(intent);
     }
