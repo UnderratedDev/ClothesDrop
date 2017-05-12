@@ -20,7 +20,7 @@
 
     <EditText
         android:id="@+id/location"
-        android:layout_width="258dp"
+        android:layout_width="266dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:ems="10"
@@ -40,19 +40,11 @@
 
     <EditText
         android:id="@+id/editText"
-        android:layout_width="match_parent"
+        android:layout_width="266dp"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:layout_gravity="center"
         android:inputType="number" />
-
-    <ImageButton
-        android:id="@+id/imageButton6"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginBottom="10dp"
-        android:background="@android:color/transparent"
-        android:scaleType="centerInside"
-        app:srcCompat="@drawable/button_number_of_bags" />
 
     <ImageButton
         android:id="@+id/imageButton7"
@@ -78,19 +70,20 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="206dp"
+        android:layout_weight="0.33"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/imageButton4"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginBottom="10dp"
             android:background="@android:color/transparent"
-            android:layout_gravity="center"
+            android:onClick="callUs"
             android:scaleType="fitCenter"
-            app:srcCompat="@drawable/button_call_us_instead"
-            android:onClick="callUs"/>
+            app:srcCompat="@drawable/button_call_us_instead" />
     </LinearLayout>
 
 </LinearLayout>
