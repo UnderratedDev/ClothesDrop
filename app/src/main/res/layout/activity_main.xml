@@ -74,6 +74,7 @@
                     android:src="@drawable/button_schedule_pickup"
                     android:adjustViewBounds="true"
                     android:background="@android:color/transparent"
+                    android:onClick="schedulingPage"
                     />
 
             </LinearLayout>
