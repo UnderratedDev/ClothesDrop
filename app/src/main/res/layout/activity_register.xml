@@ -73,7 +73,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Register"
-        android:enabled="false"/>
+        android:enabled="false"
+        android:onClick="registerButton"/>
 
 
 </LinearLayout>
