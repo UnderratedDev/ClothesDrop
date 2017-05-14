@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Calculates the closest bin relative to cur user position/location
     private int get_closest_bin () {
-        closestBin ();
+       // closestBin ();
         int index = -1;
         float minDistance = Float.MAX_VALUE;
         final Location location = cur_location;

@@ -1,8 +1,15 @@
 package nestedternary.project;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -11,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    private RegisterActivity.UserLoginServiceReceiver userLoginReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +38,19 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    public void registerButton(final View view){
+    public void registerButton(final View view) {
 
-        Toast.makeText(RegisterActivity.this,
-                URL(),
-                Toast.LENGTH_LONG).show();
+        // Toast.makeText(RegisterActivity.this, URL(), Toast.LENGTH_LONG).show();
+
+        Intent mServiceIntent = new Intent (RegisterActivity.this, UserLoginService.class);
+        mServiceIntent.setData (Uri.parse (URL()));
+        startService (mServiceIntent);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_ACTION);
+        userLoginReceiver = new RegisterActivity.UserLoginServiceReceiver();
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(userLoginReceiver, intentFilter);
 
     }
 
@@ -58,14 +75,14 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             return null;
         }
-        return "userName=" + encode(emailString) + "&phone=" + encode(phoneNumber) + "&pass=" + encode(password);
+        // return "mail.posabilities.ca:8000/api/login.php?email=" + encode(emailString) + "&phone=" + encode(phoneNumber) + "&password=" + encode(password);
+        return "mail.posabilities.ca:8000/api/reqister.php?email=" + encode(emailString) + "&password=" + encode(password);
     }
 
     public String encode(String word){
 
-        try{
-            String temp = Base64.encodeToString(word.getBytes("UTF-8"), Base64.DEFAULT);
-            return temp;
+        try {
+            return Base64.encodeToString(word.getBytes("UTF-8"), Base64.DEFAULT);
         } catch (Exception ex){
             Toast.makeText(RegisterActivity.this,
                    ex.getMessage(),
@@ -74,5 +91,26 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
     }
+
+    private class UserLoginServiceReceiver extends BroadcastReceiver {
+
+        private UserLoginServiceReceiver() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
+            if (status == Constants.STATE_ACTION_COMPLETE) {
+                startActivity (new Intent (RegisterActivity.this, LoginActivity.class));
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+            } else if (status == Constants.STATE_ACTION_FAILED) {
+                Toast.makeText (getApplicationContext (), "Register Failed", Toast.LENGTH_SHORT).show ();
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+            }
+
+        }
+    }
+
 
 }
