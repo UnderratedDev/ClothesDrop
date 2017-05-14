@@ -47,20 +47,20 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 import nestedternary.project.database.DatabaseHelper;
 import nestedternary.project.database.schema.BinLocations;
@@ -79,6 +79,24 @@ public class MainActivity extends AppCompatActivity {
     private Marker donateMarker;
     private MarkerOptions closestMarker;
     private boolean donateButtonVisibility, directionsButtonVisibility, netStatusTextviewVisibility;
+    // Object pw = new Object () {
+    // PriorityQueue<HashMap<MarkerOptions, Double>> pq;
+    // };
+
+    private PriorityQueue <HashMap <MarkerOptions, Float>> closestMarkers = new PriorityQueue<>(1, new Comparator<HashMap<MarkerOptions, Float>> () {
+
+        @Override
+        public int compare(HashMap<MarkerOptions, Float> map, HashMap<MarkerOptions, Float> map1) {
+            Map.Entry <MarkerOptions, Float> entry = map.entrySet().iterator().next(), entry1 = map1.entrySet().iterator().next();
+
+            // Log.e ("WOOF", entry.getKey () +  " " + entry1.getKey () + " " + map.get (entry.getKey ()).compareTo (map1.get (entry1.getKey ())));
+
+            return map.get (entry.getKey ()).compareTo (map1.get (entry1.getKey ()));
+            // Set<MarkerOptions> mapKeys = map.keySet(), mapKeys1 = map1.keySet ();
+
+            // map.get (mapKeys) < map1.get (mapKeys1);
+        }
+    });
     private DatabaseHelper helper;
     private Cursor binCursor;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -106,13 +124,13 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
 
-        markers                = new ArrayList<>();
-        add_donate_qty_btn     = (ImageButton) findViewById (R.id.add_donate_qty_btn);
-        directions_btn         = (ImageButton) findViewById (R.id.directions_btn);
-        net_status_textview    = (TextView)    findViewById (R.id.net_status_textview);
-        donateButtonVisibility = false;
-        directionsButtonVisibility = false;
-        netStatusTextviewVisibility= false;
+        markers                     = new ArrayList<>();
+        add_donate_qty_btn          = (ImageButton) findViewById (R.id.add_donate_qty_btn);
+        directions_btn              = (ImageButton) findViewById (R.id.directions_btn);
+        net_status_textview         = (TextView)    findViewById (R.id.net_status_textview);
+        donateButtonVisibility      = false;
+        directionsButtonVisibility  = false;
+        netStatusTextviewVisibility = false;
         add_donate_qty_btn.setVisibility (View.INVISIBLE);
         directions_btn.setVisibility(View.GONE);
         net_status_textview.setVisibility(View.INVISIBLE);
@@ -231,13 +249,56 @@ public class MainActivity extends AppCompatActivity {
         //Add and if for when we have login system
 //        Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
         // TEMPORARY, change back later
-        Intent intent = new Intent (MainActivity.this, LoginActivity.class);
-        startActivity (intent);
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
 
+    private void closestBin () {
+        /*
+        final Location location = cur_location;
+        if (location == null || markers.isEmpty())
+            return;
+
+        Location target = new Location ("target");
+
+        for (MarkerOptions mo :  markers) {
+            LatLng temp = mo.getPosition ();
+            target.setLatitude  (temp.latitude);
+            target.setLongitude (temp.longitude);
+            HashMap <MarkerOptions, Float>hm = new HashMap <>();
+            hm.put (mo, location.distanceTo(target));
+            closestMarkers.add (hm);
+            // closestMarkers.put(mo, location.distanceTo(target));
+        } */
+        get_closest_bin_online ();
+    }
+
+    private void get_closest_bin_online () {
+        // Log.e ("WOOF", closestMarkers.toString());
+        // Set<MarkerOptions> keys = closestMarkers.keySet ();
+        // Collections.sort (keys);
+        // Iterator<HashMap<MarkerOptions, Float>> iter = closestMarkers.iterator();
+        // while (iter.hasNext ())
+        HashMap <MarkerOptions, Float> hashMap = new HashMap<>(), hashMap1 = new HashMap<>();
+
+        Float a = new Float (0.0), b = new Float(1.0), c = new Float(2.0);
+
+        hashMap.put  (markers.get(0), a);
+        hashMap1.put (markers.get(1), b);
+
+        closestMarkers.add (hashMap);
+        closestMarkers.add (hashMap1);
+
+        for (HashMap<MarkerOptions, Float> e : closestMarkers) {
+            Map.Entry <MarkerOptions, Float> entry = e.entrySet().iterator().next();
+            Log.e ("WOOF",entry.getKey().getTitle() + " " + e.get (entry.getKey()));
+            // Log.e ("WOOF", " " + e.get (entry.getKey()));
+        }
     }
 
     // Calculates the closest bin relative to cur user position/location
     private int get_closest_bin () {
+        closestBin ();
         int index = -1;
         float minDistance = Float.MAX_VALUE;
         final Location location = cur_location;
