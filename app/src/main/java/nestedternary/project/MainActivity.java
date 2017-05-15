@@ -246,10 +246,10 @@ public class MainActivity extends AppCompatActivity {
 
     // Starts the main schefuling page
     public void schedulingPage (final View view) {
-        //Add and if for when we have login system
-//        Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
+        // Add and if for when we have login system
+        // Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
         // TEMPORARY, change back later
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent intent = new Intent(MainActivity.this, LoginActivity.loggedIn ? MainSchedulingActivity.class : LoginActivity.class);
         startActivity(intent);
     }
 
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         // Log.e ("WOOF", closestMarkers.toString());
         // Set<MarkerOptions> keys = closestMarkers.keySet ();
         // Collections.sort (keys);
-        // Iterator<HashMap<MarkerOptions, Float>> iter = closestMarkers.iterator();
+        Iterator<HashMap<MarkerOptions, Float>> iter = closestMarkers.iterator();
         // while (iter.hasNext ())
         HashMap <MarkerOptions, Float> hashMap = new HashMap<>(), hashMap1 = new HashMap<>();
 
@@ -657,7 +657,6 @@ public class MainActivity extends AppCompatActivity {
             int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
             if (status == Constants.STATE_ACTION_COMPLETE)
                 getLoaderManager ().initLoader (0, null, new MainActivity.MarkersLoaderCallbacks ());
-
         }
     }
 

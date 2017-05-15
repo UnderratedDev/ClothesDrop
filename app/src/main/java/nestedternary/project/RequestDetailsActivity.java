@@ -30,6 +30,8 @@ import java.util.List;
 
 public class RequestDetailsActivity extends AppCompatActivity {
 
+    ArrayAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +41,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
         String address = intent.getStringExtra("location");
 
         Spinner regions = (Spinner)findViewById(R.id.spinner);
-        ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, regionList);
+        adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, regionList);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         TextView location = (TextView)findViewById(R.id.location);
@@ -51,6 +53,12 @@ public class RequestDetailsActivity extends AppCompatActivity {
     public void cancel(final View view) {
         Toast.makeText (getApplicationContext (), "HERE", Toast.LENGTH_LONG).show ();
         finish();
+    }
+
+    @Override
+    protected void onDestroy () {
+        adapter.clear ();
+        super.onDestroy ();
     }
 
     public void callUs(final View view){

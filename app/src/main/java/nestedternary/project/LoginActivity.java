@@ -16,6 +16,9 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
+    public  static boolean loggedIn = false;
+    public  static String userId;
+
     private LoginActivity.UserLoginServiceReceiver userLoginReceiver;
 
     @Override
@@ -35,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     public void login (final View view) {
         Intent mServiceIntent = new Intent (LoginActivity.this, UserLoginService.class);
         mServiceIntent.setData (Uri.parse (URL()));
+        // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
         startService (mServiceIntent);
 
         IntentFilter intentFilter = new IntentFilter();
@@ -45,9 +49,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public String URL(){
-        String email    = ((TextView) findViewById(R.id.txt_username)).toString (), password = ((TextView) findViewById(R.id.txt_password)).toString ();
+        TextView emailTextView    = ((TextView) findViewById(R.id.txt_username)), passwordTextView = ((TextView) findViewById(R.id.txt_password));
+        String email = emailTextView.getText().toString (), password = passwordTextView.getText ().toString ();
 
-        return "mail.posabilities.ca:8000/api/login.php?email=" + encode(email) + "&password=" + encode(password);
+        return ("http://mail.posabilities.ca:8000/api/login.php?email=" + encode(email) + "&password=" + encode(password)).replaceAll ("\n", "");
     }
 
     public String encode(String word) {
@@ -73,13 +78,13 @@ public class LoginActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
             if (status == Constants.STATE_ACTION_COMPLETE) {
-                startActivity (new Intent (LoginActivity.this, MainActivity.class));
+                loggedIn = true;
+                startActivity (new Intent (LoginActivity.this, MainSchedulingActivity.class));
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText (getApplicationContext (), "Login Failed", Toast.LENGTH_SHORT).show ();
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
             }
-
         }
     }
 }

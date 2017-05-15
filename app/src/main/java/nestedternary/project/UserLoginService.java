@@ -3,6 +3,7 @@ package nestedternary.project;
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -34,48 +35,49 @@ public class UserLoginService extends IntentService {
         final String dataString = workIntent.getDataString ();
         Log.e ("WOOF", dataString);
         Ion.with(getApplicationContext()).
-                load(dataString).
-                asJsonArray()
+                load(dataString)
+                .asJsonObject ()
                 .setCallback(
-                        new FutureCallback<JsonArray>() {
+                        new FutureCallback<JsonObject>() {
                             @Override
-                            public void onCompleted(Exception e, JsonArray array) {
+                            public void onCompleted(Exception e, JsonObject json) {
                                 if (e != null) {
+                                    Toast.makeText (getApplicationContext (), e.toString (), Toast.LENGTH_SHORT).show ();
                                     // error handling goes here
                                 } else {
-                                    for (final JsonElement el : array) {
-                                        final JsonObject json;
-                                        final JsonElement statusElement, useridElement;
-                                        final String      status, userid;
+                                        final  JsonElement statusElement, useridElement;
+                                        final  String      status;
+                                        String userid = "-1";
 
-                                        json          = el.getAsJsonObject();
                                         statusElement = json.get("status");
-                                        useridElement = json.get("address");
-                                        status        = statusElement.getAsString();
-                                        userid        = useridElement.getAsString();
+                                        useridElement = json.get("userid");
 
-                                        Log.e ("WOOF", userid + " " + status);
+                                        status        = statusElement.getAsString();
+                                        if (status.equalsIgnoreCase ("success"))
+                                            userid        = useridElement.getAsString();
+
+                                        // Log.e ("WOOF", userid + " " + status);
 
                                         if (dataString.contains ("reqister.php")) {
                                             if (status.equalsIgnoreCase("success")) {
                                                 broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
                                                 // cache user id, advance to login page with intent
-                                                Log.e ("WOOF", userid + " " + status);
+                                                // Log.e ("WOOF", userid + " " + status);
                                             } else {
                                                 broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_FAILED);
                                             }
                                         } else if (dataString.contains ("login.php")) {
                                             if (status.equalsIgnoreCase("success")) {
                                                 broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
-                                                Log.e ("WOOF", userid + " " + status);
+                                                LoginActivity.userId = userid;
+                                                // Log.e ("WOOF", userid + " " + status);
                                                 // cache user id, advance to login page with intent
                                             } else {
                                                 broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_FAILED);
                                             }
-                                        }
-                                        broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_FAILED);
+                                        } else
+                                            broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_FAILED);
                                     }
-                                }
                             }
                         }
                 );

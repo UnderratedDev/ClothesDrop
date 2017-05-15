@@ -43,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
         // Toast.makeText(RegisterActivity.this, URL(), Toast.LENGTH_LONG).show();
 
         Intent mServiceIntent = new Intent (RegisterActivity.this, UserLoginService.class);
+        // Log.e ("HELL", " " + Uri.parse (URL()));
         mServiceIntent.setData (Uri.parse (URL()));
         startService (mServiceIntent);
 
@@ -76,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
             return null;
         }
         // return "mail.posabilities.ca:8000/api/login.php?email=" + encode(emailString) + "&phone=" + encode(phoneNumber) + "&password=" + encode(password);
-        return "mail.posabilities.ca:8000/api/reqister.php?email=" + encode(emailString) + "&password=" + encode(password);
+        return ("http://mail.posabilities.ca:8000/api/reqister.php?email=" + encode(emailString) + "&password=" + encode(password)).replaceAll ("\n", "");
     }
 
     public String encode(String word){

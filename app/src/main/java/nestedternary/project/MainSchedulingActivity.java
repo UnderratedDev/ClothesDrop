@@ -30,9 +30,9 @@ import java.util.List;
 
 public class MainSchedulingActivity extends AppCompatActivity {
 
-    String address = null;
+    String address   = null;
     boolean location = false, region = false;
-    ArrayList<String> ListRegions = new ArrayList<String>();
+    ArrayList<String> ListRegions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
     }
 
     public void schedulingDetails (final View view, ArrayList<String> regionInfo) {
-
 
         Intent intent = new Intent (MainSchedulingActivity.this, RequestDetailsActivity.class);
 
@@ -65,7 +64,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
     {
         Log.e("MEOW", "button");
         locationRequest(view);
-        // regionRequest(view);
+        regionRequest(view);
 
     }
 
