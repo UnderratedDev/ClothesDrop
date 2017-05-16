@@ -9,12 +9,22 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,6 +40,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
     int regionId;
     Spinner regions, date_picker;
     TextView location, bagQty;
+
+    private String lat, lng;
 
     private RequestDetailsActivity.PickupServiceReciever pickupServiceReciever;
 
@@ -115,7 +127,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     }
 
     public String URL() {
-        String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
+        final String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
 
         // Toast.makeText (getApplicationContext (), regionId + " " + selected_region + " " + selected_date + " " + location_inputted + " " + bagQtyInputted, Toast.LENGTH_LONG).show ();
 
@@ -125,7 +137,38 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
         // ADD NOTES LATERRRR
 
-        String address = "JOANNE USE BEFORE API CALL TO GET ADDRESS AND LAT AND LONG, VALIDATE ADDRESS", lat = "0", lng = "2";
+        String address = location_inputted;
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + Uri.encode(location_inputted);
+
+        Ion.with(getApplicationContext())
+                .load(url)
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String result) {
+                        Log.d("whats happening", location_inputted);
+                        if (e != null) {
+                            Log.d("theres", e.getMessage());
+                            // error handling goes here
+                        } else {
+                            try {
+                                Log.d("locationjson", result);
+                                JSONArray results;
+                                JSONObject obj = new JSONObject(result);
+                                results = (JSONArray) obj.get("results");
+                                JSONObject temp = (JSONObject) results.get(0);
+                                JSONObject geometry = (JSONObject) temp.get("geometry");
+                                JSONObject location = (JSONObject) geometry.get("location");
+
+                                lat = location.get("lat").toString();
+                                lng = location.get("lng").toString();
+                            } catch (Exception ex) {
+
+                            }
+                            Log.d("latlng", lat + " " + lng);
+                        }
+                    }
+                });
 
         return ("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                 + "&address=" + address + "&lat=" + lat + "&lng=" + lng + "&date=" + selected_date +  "&notes=").replaceAll ("\n", "");
