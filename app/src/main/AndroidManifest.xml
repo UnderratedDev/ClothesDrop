@@ -27,7 +27,7 @@
             android:name=".UserLoginService"
             android:exported="false" />
 
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -39,20 +39,21 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".Donate" />
-        <activity android:name=".SplashActivity">
+        <activity android:name=".Donate" android:screenOrientation="portrait" />
+        <activity android:name=".SplashActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainSchedulingActivity" />
-        <activity android:name=".RequestDetailsActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".MainSchedulingActivity" android:screenOrientation="portrait" />
+        <activity android:name=".RequestDetailsActivity" android:screenOrientation="portrait" />
+        <activity android:name=".LoginActivity" android:screenOrientation="portrait" />
         <activity android:name=".RegisterActivity"
-            android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".ForgotPasswordActivity"></activity>
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ForgotPasswordActivity" android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
