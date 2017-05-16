@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.location.Criteria;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
@@ -41,26 +42,28 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 import nestedternary.project.database.DatabaseHelper;
 import nestedternary.project.database.schema.BinLocations;
@@ -79,6 +82,24 @@ public class MainActivity extends AppCompatActivity {
     private Marker donateMarker;
     private MarkerOptions closestMarker;
     private boolean donateButtonVisibility, directionsButtonVisibility, netStatusTextviewVisibility;
+    // Object pw = new Object () {
+    // PriorityQueue<HashMap<MarkerOptions, Double>> pq;
+    // };
+
+    private PriorityQueue <HashMap <MarkerOptions, Float>> closestMarkers = new PriorityQueue<>(1, new Comparator<HashMap<MarkerOptions, Float>> () {
+
+        @Override
+        public int compare(HashMap<MarkerOptions, Float> map, HashMap<MarkerOptions, Float> map1) {
+            Map.Entry <MarkerOptions, Float> entry = map.entrySet().iterator().next(), entry1 = map1.entrySet().iterator().next();
+
+            // Log.e ("WOOF", entry.getKey () +  " " + entry1.getKey () + " " + map.get (entry.getKey ()).compareTo (map1.get (entry1.getKey ())));
+
+            return map.get (entry.getKey ()).compareTo (map1.get (entry1.getKey ()));
+            // Set<MarkerOptions> mapKeys = map.keySet(), mapKeys1 = map1.keySet ();
+
+            // map.get (mapKeys) < map1.get (mapKeys1);
+        }
+    });
     private DatabaseHelper helper;
     private Cursor binCursor;
     private final static int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -97,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         */
 
         Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
-        mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/androidsendjson.php"));
+        mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/androidsendjson.php"));
         startService (mServiceIntent);
 
         IntentFilter intentFilter = new IntentFilter();
@@ -106,13 +127,13 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
 
-        markers                = new ArrayList<>();
-        add_donate_qty_btn     = (ImageButton) findViewById (R.id.add_donate_qty_btn);
-        directions_btn         = (ImageButton) findViewById (R.id.directions_btn);
-        net_status_textview    = (TextView)    findViewById (R.id.net_status_textview);
-        donateButtonVisibility = false;
-        directionsButtonVisibility = false;
-        netStatusTextviewVisibility= false;
+        markers                     = new ArrayList<>();
+        add_donate_qty_btn          = (ImageButton) findViewById (R.id.add_donate_qty_btn);
+        directions_btn              = (ImageButton) findViewById (R.id.directions_btn);
+        net_status_textview         = (TextView)    findViewById (R.id.net_status_textview);
+        donateButtonVisibility      = false;
+        directionsButtonVisibility  = false;
+        netStatusTextviewVisibility = false;
         add_donate_qty_btn.setVisibility (View.INVISIBLE);
         directions_btn.setVisibility(View.GONE);
         net_status_textview.setVisibility(View.INVISIBLE);
@@ -130,6 +151,20 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         else
             createMap ();
+
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationManager.addGpsStatusListener(new GpsStatus.Listener() {
+            @Override
+            public void onGpsStatusChanged(int event) {
+                if (event == 3) {
+
+                }
+            }
+        });
     }
 
     private void setupDb () {
@@ -228,17 +263,95 @@ public class MainActivity extends AppCompatActivity {
 
     // Starts the main schefuling page
     public void schedulingPage (final View view) {
-        //Add and if for when we have login system
-        Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
-        startActivity (intent);
+        // Add and if for when we have login system
+        // Intent intent = new Intent (MainActivity.this, MainSchedulingActivity.class);
+        // TEMPORARY, change back later
+        Intent intent = new Intent(MainActivity.this, LoginActivity.loggedIn ? MainSchedulingActivity.class : LoginActivity.class);
+        startActivity(intent);
+    }
 
+    private void closestBin () {
+        /*
+        final Location location = cur_location;
+        if (location == null || markers.isEmpty())
+            return;
+
+        Location target = new Location ("target");
+
+        for (MarkerOptions mo :  markers) {
+            LatLng temp = mo.getPosition ();
+            target.setLatitude  (temp.latitude);
+            target.setLongitude (temp.longitude);
+            HashMap <MarkerOptions, Float>hm = new HashMap <>();
+            hm.put (mo, location.distanceTo(target));
+            closestMarkers.add (hm);
+            // closestMarkers.put(mo, location.distanceTo(target));
+        } */
+        get_closest_bin_online ();
+    }
+
+    private void get_closest_bin_online () {
+
+        final Location location = cur_location;
+        if (location == null || markers.isEmpty())
+            return;
+
+        Location target = new Location ("target");
+
+        for (MarkerOptions mo :  markers) {
+            LatLng temp = mo.getPosition ();
+            target.setLatitude  (temp.latitude);
+            target.setLongitude (temp.longitude);
+            HashMap <MarkerOptions, Float>hm = new HashMap <>();
+            hm.put (mo, location.distanceTo(target));
+            closestMarkers.add (hm);
+        }
+
+        final ArrayList<MarkerOptions> closest = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            closest.add(closestMarkers.poll().entrySet().iterator().next().getKey());
+        }
+
+        String url = get_distance_url(new LatLng(cur_location.getLatitude(), cur_location.getLongitude()), closest);
+
+        Ion.with(getApplicationContext()).
+                load(url).
+                asJsonObject()
+                .setCallback(
+                        new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                if (e != null) {
+                                    // error handling goes here
+                                } else {
+                                    int smallest = -1, index = -1;
+                                    JsonArray array = result.getAsJsonObject().get("rows").getAsJsonArray().get(0).getAsJsonObject().get("elements").getAsJsonArray();
+
+                                    for (int i = 0; i < array.size(); i++) {
+                                        int current = array.get(i).getAsJsonObject().get("distance").getAsJsonObject().get("value").getAsInt();
+                                        if (smallest == -1 || current < smallest) {
+                                            smallest = current;
+                                            index = i;
+                                        }
+                                    }
+
+                                    closestMarker = markers.get(getBin(closest.get(index)));
+                                    Log.d("position", markers.get(getBin(closest.get(index))).getPosition().toString());
+                                }
+                            }
+                        }
+                );
     }
 
     // Calculates the closest bin relative to cur user position/location
     private int get_closest_bin () {
+       // closestBin ();
+        Log.e (":)", "" + markers.size ());
         int index = -1;
         float minDistance = Float.MAX_VALUE;
         final Location location = cur_location;
+
         if (location == null || markers.isEmpty())
             return index;
 
@@ -281,7 +394,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMarkerClick(Marker arg0) {
                 if (donateMarker != null)
-                    if (donateMarker.getPosition().equals(closestMarker.getPosition()))
+                    if (closestMarker != null && donateMarker.getPosition().equals(closestMarker.getPosition()))
                         donateMarker.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_VIOLET));
                     else
                         donateMarker.setIcon (BitmapDescriptorFactory.defaultMarker (BitmapDescriptorFactory.HUE_RED));
@@ -305,11 +418,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private String get_distance_url (LatLng origin, ArrayList<MarkerOptions> dest) {
+        String str_dest = "destinations=";
+        for (int i = 0; i < dest.size(); i++) {
+            str_dest = str_dest + dest.get(i).getPosition().latitude + "," + dest.get(i).getPosition().longitude;
+            str_dest = i != dest.size() - 1 ? str_dest + "|" : str_dest ;
+        }
+
+        String str_origin = "origins=" + origin.latitude + "," + origin.longitude, parameters = str_origin + "&" + str_dest;
+
+        return "https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&" + parameters;
+    }
+
     // mapped to directions button, intent is made for google maps application and then opens the application using the location data we posses
     public void get_directions (final View view) {
         if (donateMarker != null) {
             LatLng latLng = donateMarker.getPosition();
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?saddr=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&daddr=" + latLng.latitude + "," + latLng.longitude));
+            String url = cur_location != null ? "http://maps.google.com/maps?saddr=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&daddr=" + latLng.latitude + "," + latLng.longitude : "http://maps.google.com/maps?daddr=" + latLng.latitude + "," + latLng.longitude;
+            Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.MapsActivity");
@@ -471,6 +597,7 @@ public class MainActivity extends AppCompatActivity {
                         .snippet (binLocation.getAddress ())
                         .position (new LatLng (binLocation.getLatitude (), binLocation.getLongtitude ())));
         }
+        Log.e (":)", "" + markers.size ());
     }
 
     // Fetches the data and calls teh get_closest_bin method to calculate the nearest bin.
@@ -480,45 +607,88 @@ public class MainActivity extends AppCompatActivity {
         protected Void doInBackground (final Void... params) {
             if (map != null) {
                 extractCursorData ();
-                final int index = get_closest_bin();
-                if (index != -1) {
-                    markers.get(index).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-                    closestMarker = markers.get (index);
+                // final int index = get_closest_bin();
+                // if (index != -1) {
 
-                    runOnUiThread (new Runnable () {
-                        public void run () {
-                            for (MarkerOptions mo : markers)
-                                map.addMarker(mo);
+                runOnUiThread (new Runnable () {
+                    public void run () {
+                        for (MarkerOptions mo : markers)
+                            map.addMarker(mo);
 
-                            if (index != -1) {
-                                map.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(index).getPosition(), 13));
-                                final Location location = cur_location;
+                        map.moveCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(49.2290040, -123.0412511), 10));
 
-                                LatLng cur = new LatLng (location.getLatitude(), location.getLongitude()), latLng = markers.get (index).getPosition();
-                                String url = get_directions_url(cur, latLng);
+                    }
+                });
 
-                                if (checkNetworkConnection ())
-                                    //new DownloadTask().execute (url);
-                                    Ion.with(getApplicationContext()).
-                                            load(url).
-                                            asString()
-                                            .setCallback(
-                                                    new FutureCallback<String>() {
-                                                        @Override
-                                                        public void onCompleted(Exception e, String result) {
-                                                            if (e != null) {
-                                                                // error handling goes here
-                                                            } else {
-                                                                ParserTask parserTask = new ParserTask();
-                                                                parserTask.execute(result);
-                                                            }
+                runOnUiThread (new Runnable () {
+                    public void run () {
+
+                        mapClickListener ();
+                        // FASTER AND map toolbar
+
+                        markerClickListener ();
+
+                    }
+                });
+
+
+                while (cur_location == null) ;
+
+                if (checkNetworkConnection()) {
+                    get_closest_bin_online();
+                    while (closestMarker == null);
+                } else {
+                    int bin_index = get_closest_bin();
+                    if (bin_index == -1) {
+                        return null;
+                    }
+                    closestMarker = markers.get(bin_index);
+                }
+
+                markers.get (getBin (closestMarker)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+
+
+
+                // closestMarker = markers.get (index);
+
+                runOnUiThread (new Runnable () {
+                    public void run () {
+                        map.addMarker(markers.get(getBin(closestMarker)));
+//                        map.clear();
+//                        for (MarkerOptions mo : markers)
+//                            map.addMarker(mo);
+
+
+
+                        if (closestMarker != null) {
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(closestMarker.getPosition(), 13));
+                            final Location location = cur_location;
+
+                            LatLng cur = new LatLng (location.getLatitude(), location.getLongitude()), latLng = closestMarker.getPosition();
+                            String url = get_directions_url(cur, latLng);
+
+                            if (checkNetworkConnection ())
+                                //new DownloadTask().execute (url);
+                                Ion.with(getApplicationContext()).
+                                        load(url).
+                                        asString()
+                                        .setCallback(
+                                                new FutureCallback<String>() {
+                                                    @Override
+                                                    public void onCompleted(Exception e, String result) {
+                                                        if (e != null) {
+                                                            // error handling goes here
+                                                        } else {
+                                                            ParserTask parserTask = new ParserTask();
+                                                            parserTask.execute(result);
                                                         }
                                                     }
-                                            );
-                            } else
-                                map.moveCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(49.2290040, -123.0412511), 10));
-                        }
-                    });
+                                                }
+                                        );
+                        } else
+                            map.moveCamera (CameraUpdateFactory.newLatLngZoom (new LatLng(49.2290040, -123.0412511), 10));
+                    }
+                });
 
                 /* need to add this to select maker in future maybe??
                     @Override
@@ -538,7 +708,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-            }
             return null;
         }
 
@@ -592,24 +761,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
-            if (status == Constants.STATE_ACTION_COMPLETE)
-                getLoaderManager ().initLoader (0, null, new MainActivity.MarkersLoaderCallbacks ());
-
+            if (status == Constants.STATE_ACTION_COMPLETE) {
+                getLoaderManager().initLoader(0, null, new MainActivity.MarkersLoaderCallbacks());
+                LocalBroadcastManager.getInstance (getApplicationContext ()).unregisterReceiver (backendReceiver);
+            }
         }
     }
 
     private class MarkersLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
         @Override
-        public Loader<Cursor> onCreateLoader(final int    id,
-                                             final Bundle args)
-        {
+        public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
             return new CursorLoader(MainActivity.this, BinContentProvider.GET_BINS_URI, null, null, null, null);
         }
 
         @Override
-        public void onLoadFinished(final Loader<Cursor> loader,
-                                   final Cursor         data)
-        {
+        public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
             binCursor = data;
             new AsyncTaskRunnerFetch ().execute();
         }

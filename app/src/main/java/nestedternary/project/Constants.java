@@ -66,6 +66,9 @@ public final class Constants {
     // The background thread is done
     public static final int STATE_ACTION_COMPLETE = 4;
 
+    // the background thread tash has failed
+    public static final int STATE_ACTION_FAILED = 5;
+
     // The background thread is doing logging
     public static final int STATE_LOG = -1;
 

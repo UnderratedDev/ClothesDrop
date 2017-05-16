@@ -14,19 +14,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <!--
             android:exported makes the service
             only available to the app
         -->
         <service
             android:name=".BackendPullService"
-            android:exported="false"
-            />
-        <activity android:name=".MainActivity"></activity>
+            android:exported="false" />
+
+        <service
+            android:name=".UserLoginService"
+            android:exported="false" />
+
+        <activity android:name=".MainActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDRZfPRiuRg7W9Ydx0EuBO51dtxKu9UPAM" />
+            android:value="AIzaSyCYQ08FWqNK72ejOB7EXEU_ahN-dPjXrGo" />
 
         <provider
             android:name=".BinContentProvider"
@@ -43,7 +48,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainSchedulingActivity" />
-        <activity android:name=".RequestDetailsActivity"></activity>
+        <activity android:name=".RequestDetailsActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".RegisterActivity"
+            android:windowSoftInputMode="adjustPan"/>
+        <activity android:name=".ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>

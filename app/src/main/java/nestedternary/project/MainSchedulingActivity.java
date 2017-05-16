@@ -26,13 +26,16 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainSchedulingActivity extends AppCompatActivity {
 
-    String address = null;
+    String address   = null;
     boolean location = false, region = false;
-    ArrayList<String> ListRegions = new ArrayList<String>();
+    HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
+    // ArrayList<String> ListRegions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,36 +43,34 @@ public class MainSchedulingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_scheduling);
     }
 
-    public void schedulingDetails (final View view, ArrayList<String> regionInfo) {
-
+    public void schedulingDetails (final View view) {//, ArrayList<String> regionInfo) {
 
         Intent intent = new Intent (MainSchedulingActivity.this, RequestDetailsActivity.class);
 
-        if(regionInfo.isEmpty())
-        {
+        /*
+        if (regionInfo.isEmpty()) {
             Toast.makeText(MainSchedulingActivity.this,
                     "Error with connection please try again",
                     Toast.LENGTH_LONG).show();
         }
-        else
-        {
-            intent.putStringArrayListExtra("regionList", regionInfo);
+        else { */
+            // intent.putStringArrayListExtra("regionList", regionInfo);
+            intent.putExtra ("hMap", regions);
             intent.putExtra("location", address);
             startActivity(intent);
-        }
+        // }
 
 
     }
 
-    public void jsonRequest(final View view)
-    {
+    public void jsonRequest(final View view) {
         Log.e("MEOW", "button");
         locationRequest(view);
         // regionRequest(view);
 
     }
 
-    public void locationRequest(final View view){
+    public void locationRequest(final View view) {
         Log.e("MEOW", "Inside");
 
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -89,68 +90,62 @@ public class MainSchedulingActivity extends AppCompatActivity {
             // Get the name of the best provider
 
             String provider = locationManager.getBestProvider(criteria, true);
+            
             // Get Current Location
             Location cur_location = locationManager.getLastKnownLocation(provider);
-
-
             Log.e("MEOW", "first else");
-            Ion.with(this).
-                    load("http://maps.googleapis.com/maps/api/geocode/json?latlng="+ cur_location.getLatitude() + "," + cur_location.getLongitude() +"&sensor=true").
-                    asString().
-                    setCallback(
-                            new FutureCallback<String>()
-                            {
+            if(cur_location != null) {
+                Log.e("MEOW", "In the if");
+                Ion.with(this).
+                        load("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&sensor=true").
+                        asString().
+                        setCallback(
+                                new FutureCallback<String>() {
 
-                                @Override
-                                public void onCompleted(final Exception ex,
-                                                        String result)
-                                {
-                                    String      name = null;
-                                    if(ex != null)
-                                    {
-                                        Toast.makeText(MainSchedulingActivity.this,
-                                                "Error: " + ex.getMessage(),
-                                                Toast.LENGTH_LONG).show();
+                                    @Override
+                                    public void onCompleted(final Exception ex,
+                                                            String result) {
+                                        String name = null;
+                                        if (ex != null) {
+                                            Toast.makeText(MainSchedulingActivity.this,
+                                                    "Error: " + ex.getMessage(),
+                                                    Toast.LENGTH_LONG).show();
 
-                                    }
-                                    else
-                                    {
-                                        Log.e("MEOW", "ion else");
+                                        } else {
+                                            Log.e("MEOW", "ion else");
 
-                                        try
-                                        {
-                                            final JsonElement nameElement;
-                                            JSONArray results;
-                                            JSONObject obj = new JSONObject(result);
-                                            results         = (JSONArray)obj.get("results");
-                                            JSONObject temp  =(JSONObject) results.get(0);
+                                            try {
+                                                final JsonElement nameElement;
+                                                JSONArray results;
+                                                JSONObject obj = new JSONObject(result);
+                                                results = (JSONArray) obj.get("results");
+                                                JSONObject temp = (JSONObject) results.get(0);
 
-                                            address = temp.get("formatted_address").toString();
-                                            location = true;
-                                            //if(region && location)
-                                               // schedulingDetails(view, ListRegions);
-                                            regionRequest(view);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            Log.e("MEOW", "ion catch " + e.getMessage());
+                                                address = temp.get("formatted_address").toString();
+                                                location = true;
+                                                //if(region && location)
+                                                // schedulingDetails(view, ListRegions);
+                                                regionRequest(view);
+                                            } catch (Exception e) {
+                                                Log.e("MEOW", "ion catch " + e.getMessage());
+                                            }
+
                                         }
 
+
                                     }
-
-
-                                }
-                            });
-
+                                });
+            }
         }
 
     }
 
 
-    public void regionRequest(final View view){
-
+    public void regionRequest(final View view) {
+        regions.clear ();
+        // ListRegions.clear();
         Ion.with(this).
-                load("http://mail.posabilities.ca:8000/api/getregions.php").
+                load("http://mail.posabilities.ca:8000/api/schedulingjson.php").
                 asJsonArray().
                 setCallback(
                         new FutureCallback<JsonArray>()
@@ -173,17 +168,32 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                     {
 
                                         final JsonObject json;
-                                        final JsonElement nameElement;
-                                        final String      name;
+                                        final JsonArray  datesJson;
+                                        final JsonElement nameElement, idElement, dates;
+                                        final String             name;
+                                        final int                id;
+                                        ArrayList<Integer> datesList = new ArrayList <>();
 
                                         json              = element.getAsJsonObject();
-                                        nameElement       = json.get("regionname");
+                                        nameElement       = json.get ("name");
+                                        idElement         = json.get ("id");
+                                        dates             = json.get ("regionDayPicker");
+
                                         name              = nameElement.getAsString();
-                                        ListRegions.add(name);
+                                        id                = idElement.getAsInt ();
+                                        datesJson         = dates.getAsJsonArray();
+
+                                        for (JsonElement el : datesJson)
+                                            datesList.add (el.getAsInt ());
+
+                                        regions.put (new Region (name, id, datesList), datesList);
+
+                                        Log.e (":)", name + " " + id + datesList.size ());
+                                        // ListRegions.add(name);
                                     }
                                     //region = true;
                                     //if(region && location)
-                                    schedulingDetails(view, ListRegions);
+                                    schedulingDetails(view); // ListRegions);
                                 }
 
                             }
