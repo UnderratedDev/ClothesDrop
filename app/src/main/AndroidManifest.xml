@@ -50,7 +50,8 @@
         <activity android:name=".MainSchedulingActivity" />
         <activity android:name=".RequestDetailsActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
+        <activity android:name=".RegisterActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".ForgotPasswordActivity"></activity>
     </application>
 
