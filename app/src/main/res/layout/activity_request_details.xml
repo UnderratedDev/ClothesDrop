@@ -38,7 +38,7 @@
         />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/bagQty"
         android:layout_width="266dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -51,6 +51,7 @@
         android:layout_height="50dp"
         android:background="@android:color/transparent"
         android:scaleType="centerInside"
+        android:onClick="requestPickup"
         app:srcCompat="@drawable/button_request_pickup"
         android:layout_marginBottom="10dp"
 
