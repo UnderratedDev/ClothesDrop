@@ -57,13 +57,11 @@ public class RegisterActivity extends AppCompatActivity {
 
     public String URL(){
         TextView email = (TextView) findViewById(R.id.txt_register_username);
-        TextView phone = (TextView) findViewById(R.id.txt_register_phone);
         TextView pass = (TextView) findViewById(R.id.txt_register_password);
         TextView passComfirm = (TextView) findViewById(R.id.txt_register_password_confirm);
 
 
         String emailString = email.getText().toString();
-        String phoneNumber = phone.getText().toString();
 
         String password = pass.getText().toString();
         String passwordComfirm = passComfirm.getText().toString();
