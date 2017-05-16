@@ -65,7 +65,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
             return null;
         }
-
     }
 
     private class UserLoginServiceReceiver extends BroadcastReceiver {
@@ -82,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                 finish();
                 startActivity (new Intent (LoginActivity.this, MainSchedulingActivity.class));
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
-                //finish();
+                finish ();
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText (getApplicationContext (), "Login Failed", Toast.LENGTH_SHORT).show ();
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);

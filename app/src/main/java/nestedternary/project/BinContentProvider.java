@@ -51,8 +51,6 @@ public class BinContentProvider extends ContentProvider{
         {
             case GET_BINS_URI_INT:
             {
-                final SQLiteDatabase db;
-
                 helper.openDatabaseForReading(getContext());
                 cursor = helper.getBinLocationsCursor();
                 helper.close();

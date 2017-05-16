@@ -347,9 +347,11 @@ public class MainActivity extends AppCompatActivity {
     // Calculates the closest bin relative to cur user position/location
     private int get_closest_bin () {
        // closestBin ();
+        Log.e (":)", "" + markers.size ());
         int index = -1;
         float minDistance = Float.MAX_VALUE;
         final Location location = cur_location;
+
         if (location == null || markers.isEmpty())
             return index;
 
@@ -595,6 +597,7 @@ public class MainActivity extends AppCompatActivity {
                         .snippet (binLocation.getAddress ())
                         .position (new LatLng (binLocation.getLatitude (), binLocation.getLongtitude ())));
         }
+        Log.e (":)", "" + markers.size ());
     }
 
     // Fetches the data and calls teh get_closest_bin method to calculate the nearest bin.
@@ -758,23 +761,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
-            if (status == Constants.STATE_ACTION_COMPLETE)
-                getLoaderManager ().initLoader (0, null, new MainActivity.MarkersLoaderCallbacks ());
+            if (status == Constants.STATE_ACTION_COMPLETE) {
+                getLoaderManager().initLoader(0, null, new MainActivity.MarkersLoaderCallbacks());
+                LocalBroadcastManager.getInstance (getApplicationContext ()).unregisterReceiver (backendReceiver);
+            }
         }
     }
 
     private class MarkersLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
         @Override
-        public Loader<Cursor> onCreateLoader(final int    id,
-                                             final Bundle args)
-        {
+        public Loader<Cursor> onCreateLoader(final int id, final Bundle args) {
             return new CursorLoader(MainActivity.this, BinContentProvider.GET_BINS_URI, null, null, null, null);
         }
 
         @Override
-        public void onLoadFinished(final Loader<Cursor> loader,
-                                   final Cursor         data)
-        {
+        public void onLoadFinished(final Loader<Cursor> loader, final Cursor data) {
             binCursor = data;
             new AsyncTaskRunnerFetch ().execute();
         }

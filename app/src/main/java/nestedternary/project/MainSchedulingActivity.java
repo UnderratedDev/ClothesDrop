@@ -44,14 +44,12 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
         Intent intent = new Intent (MainSchedulingActivity.this, RequestDetailsActivity.class);
 
-        if(regionInfo.isEmpty())
-        {
+        if (regionInfo.isEmpty()) {
             Toast.makeText(MainSchedulingActivity.this,
                     "Error with connection please try again",
                     Toast.LENGTH_LONG).show();
         }
-        else
-        {
+        else {
             intent.putStringArrayListExtra("regionList", regionInfo);
             intent.putExtra("location", address);
             startActivity(intent);
@@ -60,8 +58,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
     }
 
-    public void jsonRequest(final View view)
-    {
+    public void jsonRequest(final View view) {
         Log.e("MEOW", "button");
         locationRequest(view);
         regionRequest(view);
@@ -88,6 +85,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
             // Get the name of the best provider
 
             String provider = locationManager.getBestProvider(criteria, true);
+            
             // Get Current Location
             Location cur_location = locationManager.getLastKnownLocation(provider);
             Log.e("MEOW", "first else");
