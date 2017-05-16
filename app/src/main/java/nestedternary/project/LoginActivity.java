@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity {
                 loggedIn = true;
                 startActivity (new Intent (LoginActivity.this, MainSchedulingActivity.class));
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+                // finish(); ??
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText (getApplicationContext (), "Login Failed", Toast.LENGTH_SHORT).show ();
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);

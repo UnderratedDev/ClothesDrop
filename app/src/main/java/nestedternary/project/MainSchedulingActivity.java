@@ -90,64 +90,56 @@ public class MainSchedulingActivity extends AppCompatActivity {
             String provider = locationManager.getBestProvider(criteria, true);
             // Get Current Location
             Location cur_location = locationManager.getLastKnownLocation(provider);
-
-
             Log.e("MEOW", "first else");
-            Ion.with(this).
-                    load("http://maps.googleapis.com/maps/api/geocode/json?latlng="+ cur_location.getLatitude() + "," + cur_location.getLongitude() +"&sensor=true").
-                    asString().
-                    setCallback(
-                            new FutureCallback<String>()
-                            {
+            if(cur_location != null) {
+                Log.e("MEOW", "In the if");
+                Ion.with(this).
+                        load("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + cur_location.getLatitude() + "," + cur_location.getLongitude() + "&sensor=true").
+                        asString().
+                        setCallback(
+                                new FutureCallback<String>() {
 
-                                @Override
-                                public void onCompleted(final Exception ex,
-                                                        String result)
-                                {
-                                    String      name = null;
-                                    if(ex != null)
-                                    {
-                                        Toast.makeText(MainSchedulingActivity.this,
-                                                "Error: " + ex.getMessage(),
-                                                Toast.LENGTH_LONG).show();
+                                    @Override
+                                    public void onCompleted(final Exception ex,
+                                                            String result) {
+                                        String name = null;
+                                        if (ex != null) {
+                                            Toast.makeText(MainSchedulingActivity.this,
+                                                    "Error: " + ex.getMessage(),
+                                                    Toast.LENGTH_LONG).show();
 
-                                    }
-                                    else
-                                    {
-                                        Log.e("MEOW", "ion else");
+                                        } else {
+                                            Log.e("MEOW", "ion else");
 
-                                        try
-                                        {
-                                            final JsonElement nameElement;
-                                            JSONArray results;
-                                            JSONObject obj = new JSONObject(result);
-                                            results         = (JSONArray)obj.get("results");
-                                            JSONObject temp  =(JSONObject) results.get(0);
+                                            try {
+                                                final JsonElement nameElement;
+                                                JSONArray results;
+                                                JSONObject obj = new JSONObject(result);
+                                                results = (JSONArray) obj.get("results");
+                                                JSONObject temp = (JSONObject) results.get(0);
 
-                                            address = temp.get("formatted_address").toString();
-                                            location = true;
-                                            //if(region && location)
-                                               // schedulingDetails(view, ListRegions);
-                                            regionRequest(view);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            Log.e("MEOW", "ion catch " + e.getMessage());
+                                                address = temp.get("formatted_address").toString();
+                                                location = true;
+                                                //if(region && location)
+                                                // schedulingDetails(view, ListRegions);
+                                                regionRequest(view);
+                                            } catch (Exception e) {
+                                                Log.e("MEOW", "ion catch " + e.getMessage());
+                                            }
+
                                         }
 
+
                                     }
-
-
-                                }
-                            });
-
+                                });
+            }
         }
 
     }
 
 
     public void regionRequest(final View view){
-
+        ListRegions.clear();
         Ion.with(this).
                 load("http://mail.posabilities.ca:8000/api/getregions.php").
                 asJsonArray().

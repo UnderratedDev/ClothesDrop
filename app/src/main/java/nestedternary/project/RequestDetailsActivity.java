@@ -31,22 +31,26 @@ import java.util.List;
 public class RequestDetailsActivity extends AppCompatActivity {
 
     ArrayAdapter adapter;
+    ArrayList<String> regionList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_details);
         Intent intent = getIntent ();
-        ArrayList<String> regionList = intent.getStringArrayListExtra("regionList");
+        regionList = intent.getStringArrayListExtra("regionList");
+        //what happens if location is never set, this can happen if GSP is not enabled
         String address = intent.getStringExtra("location");
 
         Spinner regions = (Spinner)findViewById(R.id.spinner);
+
         adapter = new ArrayAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, regionList);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         TextView location = (TextView)findViewById(R.id.location);
+
         regions.setAdapter(adapter);
-        if(location != null)
+        if(location != null && address != null)
             location.setText(address);
     }
 
@@ -57,7 +61,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy () {
-        adapter.clear ();
         super.onDestroy ();
     }
 
