@@ -61,7 +61,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
     public void jsonRequest(final View view) {
         Log.e("MEOW", "button");
         locationRequest(view);
-        regionRequest(view);
+        // regionRequest(view);
 
     }
 
