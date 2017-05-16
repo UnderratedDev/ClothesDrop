@@ -43,7 +43,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:layout_gravity="center"
-        android:inputType="number" />
+        android:inputType="number"
+        android:hint="Number Of Bags"/>
 
     <ImageButton
         android:id="@+id/imageButton7"
