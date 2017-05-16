@@ -26,7 +26,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDRZfPRiuRg7W9Ydx0EuBO51dtxKu9UPAM" />
+            android:value="AIzaSyCYQ08FWqNK72ejOB7EXEU_ahN-dPjXrGo" />
 
         <provider
             android:name=".BinContentProvider"

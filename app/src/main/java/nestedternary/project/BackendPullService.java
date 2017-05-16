@@ -87,8 +87,8 @@ public class BackendPullService extends IntentService {
                                         json              = el.getAsJsonObject();
                                         nameElement       = json.get("name");
                                         pictureUrlElement = json.get("address");
-                                        latitudeElement   = json.get("lat");
-                                        longtitudeElement = json.get("long");
+                                        latitudeElement   = json.get("latitude");
+                                        longtitudeElement = json.get("longtitude");
                                         name              = nameElement.getAsString();
                                         address        = pictureUrlElement.getAsString();
                                         latitude          = latitudeElement.getAsDouble ();
