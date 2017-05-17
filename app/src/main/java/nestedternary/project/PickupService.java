@@ -79,7 +79,7 @@ public class PickupService extends IntentService {
                                             final JsonElement pickupIdElement   = json.get ("pickupid");
                                             final JsonElement regionIdElement   = json.get ("regionid");
                                             final JsonElement regionNameElement = json.get ("regionname");
-                                            final JsonElement bagQtyElement     = json.get ("bagQty");
+                                            final JsonElement bagQtyElement     = json.get ("bagqty");
                                             final JsonElement addressElement    = json.get ("address");
                                             final JsonElement notesElement      = json.get ("notes");
                                             final JsonElement dateElement       = json.get ("date");
