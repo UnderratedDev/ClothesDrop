@@ -113,17 +113,55 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
     // get lat and long from address
     public void requestPickup (final View view) {
-        Intent mServiceIntent = new Intent (RequestDetailsActivity.this, PickupService.class);
-        mServiceIntent.setData (Uri.parse (URL()));
-        // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
-        startService (mServiceIntent);
+        final Intent mServiceIntent = new Intent (RequestDetailsActivity.this, PickupService.class);
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.BROADCAST_ACTION);
-        pickupServiceReciever = new RequestDetailsActivity.PickupServiceReciever();
+        final String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
+        final String address = location_inputted;
+        String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + Uri.encode(location_inputted);
 
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
-        // Background serivce to complete create pickup
+        Ion.with(getApplicationContext())
+                .load(url)
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String result) {
+                        if (e != null) {
+                            // error handling goes here
+                        } else {
+                            try {
+                                JSONArray results;
+                                JSONObject obj = new JSONObject(result);
+                                if (!obj.getString("status").equalsIgnoreCase("OK")) {
+                                    return;
+                                }
+                                results = (JSONArray) obj.get("results");
+                                JSONObject temp = (JSONObject) results.get(0);
+                                JSONObject geometry = (JSONObject) temp.get("geometry");
+                                JSONObject location = (JSONObject) geometry.get("location");
+
+                                lat = location.get("lat").toString();
+                                lng = location.get("lng").toString();
+                            } catch (Exception ex) {
+
+                            }
+
+                            String url = (("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
+                                    + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=").replaceAll ("\n", "")).replaceAll (" ", "%20");
+
+                            mServiceIntent.setData (Uri.parse (url));
+                            // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
+                            startService (mServiceIntent);
+
+                            IntentFilter intentFilter = new IntentFilter();
+                            intentFilter.addAction(Constants.BROADCAST_ACTION);
+                            pickupServiceReciever = new RequestDetailsActivity.PickupServiceReciever();
+
+                            LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
+                            // Background serivce to complete create pickup
+                        }
+                    }
+                });
+
     }
 
     public String URL() {

@@ -36,7 +36,7 @@ public class PickupService extends IntentService {
     @Override
     protected void onHandleIntent (Intent workIntent) {
         final String dataString = workIntent.getDataString ();
-        Log.e ("Background Service", dataString);,
+        Log.e ("Background Service", dataString);
         if (dataString.contains ("createpickupforuser.php")) {
             Ion.with(getApplicationContext()).
                     load(dataString).
@@ -79,7 +79,7 @@ public class PickupService extends IntentService {
                                             final JsonElement pickupIdElement   = json.get ("pickupid");
                                             final JsonElement regionIdElement   = json.get ("regionid");
                                             final JsonElement regionNameElement = json.get ("regionname");
-                                            final JsonElement bagQtyElement     = json.get ("bagQty");
+                                            final JsonElement bagQtyElement     = json.get ("bagqty");
                                             final JsonElement addressElement    = json.get ("address");
                                             final JsonElement notesElement      = json.get ("notes");
                                             final JsonElement dateElement       = json.get ("date");
@@ -90,7 +90,7 @@ public class PickupService extends IntentService {
                                             final String      regionname        = regionNameElement.getAsString ();
                                             final int         bagQty            = bagQtyElement.getAsInt ();
                                             final String      address           = addressElement.getAsString ();
-                                            final String      notes             = notesElement.getAsString ();
+                                            final String      notes             = !notesElement.isJsonNull() ? notesElement.getAsString () : null;
                                             final String      date              = dateElement.getAsString();
                                             final float       lat               = latElement.getAsFloat ();
                                             final float       lng               = lngElement.getAsFloat ();
@@ -102,12 +102,13 @@ public class PickupService extends IntentService {
 
                                             // public Pickup (int pickupid, int bagQty, int date, String address, String notes, float lat, float lng, String name, int regionid) {
                                         }
+                                        broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
                                     }
                                 }
                             }
                     );
         }
 
-        broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
+
     }
 }
