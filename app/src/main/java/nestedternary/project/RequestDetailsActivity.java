@@ -129,6 +129,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     public String URL() {
         final String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
 
+        boolean complete = false;
         // Toast.makeText (getApplicationContext (), regionId + " " + selected_region + " " + selected_date + " " + location_inputted + " " + bagQtyInputted, Toast.LENGTH_LONG).show ();
 
 
@@ -155,20 +156,28 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 Log.d("locationjson", result);
                                 JSONArray results;
                                 JSONObject obj = new JSONObject(result);
+                                if (!obj.getString("status").equalsIgnoreCase("OK")) {
+                                    return;
+                                }
                                 results = (JSONArray) obj.get("results");
                                 JSONObject temp = (JSONObject) results.get(0);
                                 JSONObject geometry = (JSONObject) temp.get("geometry");
                                 JSONObject location = (JSONObject) geometry.get("location");
 
-                                lat = location.get("lat").toString();
-                                lng = location.get("lng").toString();
-                            } catch (Exception ex) {
+                            lat = location.get("lat").toString();
+                            lng = location.get("lng").toString();
+                        } catch (Exception ex) {
 
-                            }
-                            Log.d("latlng", lat + " " + lng);
                         }
+                        Log.d("latlng", lat + " " + lng);
                     }
-                });
+                }
+            });
+
+        while (lat == null || lng == null);
+
+        // if (lat == null || lng == null)
+           // return null;
 
         return ("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                 + "&address=" + address + "&lat=" + lat + "&lng=" + lng + "&date=" + selected_date +  "&notes=").replaceAll ("\n", "");

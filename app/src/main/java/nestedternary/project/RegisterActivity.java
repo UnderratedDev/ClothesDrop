@@ -42,9 +42,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Toast.makeText(RegisterActivity.this, URL(), Toast.LENGTH_LONG).show();
 
+        String url = URL();
+
+        if (url == null)
+            return;
+
         Intent mServiceIntent = new Intent (RegisterActivity.this, UserLoginService.class);
+
+        mServiceIntent.setData (Uri.parse (url));
         // Log.e ("HELL", " " + Uri.parse (URL()));
-        mServiceIntent.setData (Uri.parse (URL()));
         startService (mServiceIntent);
 
         IntentFilter intentFilter = new IntentFilter();
@@ -52,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         userLoginReceiver = new RegisterActivity.UserLoginServiceReceiver();
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(userLoginReceiver, intentFilter);
-
+        finish ();
     }
 
     public String URL(){
@@ -75,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
             return null;
         }
         // return "mail.posabilities.ca:8000/api/login.php?email=" + encode(emailString) + "&phone=" + encode(phoneNumber) + "&password=" + encode(password);
-        return ("http://mail.posabilities.ca:8000/api/reqister.php?email=" + encode(emailString) + "&password=" + encode(password)).replaceAll ("\n", "");
+        return ("http://mail.posabilities.ca:8000/api/reqister.php?email=" + encode(emailString) + "&password=" + encode(password) + "&tos=1").replaceAll ("\n", "");
     }
 
     public String encode(String word){
@@ -101,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
             if (status == Constants.STATE_ACTION_COMPLETE) {
-                startActivity (new Intent (RegisterActivity.this, LoginActivity.class));
+                // startActivity (new Intent (RegisterActivity.this, LoginActivity.class));
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText (getApplicationContext (), "Register Failed", Toast.LENGTH_SHORT).show ();

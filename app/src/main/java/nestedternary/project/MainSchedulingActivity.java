@@ -1,18 +1,26 @@
 package nestedternary.project;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,12 +43,50 @@ public class MainSchedulingActivity extends AppCompatActivity {
     String address   = null;
     boolean location = false, region = false;
     HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
+    ArrayList<String> addresses;
+    ListView lv;
+    ArrayAdapter<String> adapter;
+    private MainSchedulingActivity.PickupServiceReciever pickupServiceReciever;
+
     // ArrayList<String> ListRegions = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_scheduling);
+
+        lv = (ListView) findViewById (android.R.id.list);
+        addresses = new ArrayList<>();
+
+        Intent mServiceIntent = new Intent (MainSchedulingActivity.this, PickupService.class);
+        mServiceIntent.setData (Uri.parse (URL()));
+        // mServiceIntent.setData (Uri.parse (("http://mail.posabilities.ca:8000/api/getpickupsforuser.php?userid=NTkxYjMxNzljMWI3ZA==").replaceAll ("\n", "")));
+        // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
+
+        startService (mServiceIntent);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_ACTION);
+
+        pickupServiceReciever = new MainSchedulingActivity.PickupServiceReciever();
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
+
+        // (ListView) findViewById (android.R.layout.act)
+    }
+
+    public String URL() {
+        return ("http://mail.posabilities.ca:8000/api/getpickupsforuser.php?userid=" + encode(LoginActivity.userId)).replaceAll ("\n", "");
+    }
+
+    public String encode(String word) {
+        try {
+            return Base64.encodeToString(word.getBytes("UTF-8"), Base64.DEFAULT);
+        } catch (Exception ex) {
+            Toast.makeText(MainSchedulingActivity.this,
+                    ex.getMessage(),
+                    Toast.LENGTH_LONG).show();
+            return null;
+        }
     }
 
     public void schedulingDetails (final View view) {//, ArrayList<String> regionInfo) {
@@ -198,6 +244,28 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
                             }
                         });
+    }
+
+    private class PickupServiceReciever extends BroadcastReceiver {
+
+        private PickupServiceReciever() {
+
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int status = intent.getIntExtra(Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
+            if (status == Constants.STATE_ACTION_COMPLETE) {
+                for (Pickup p : PickupService.pickups)
+                    addresses.add (p.address);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext (), android.R.layout.simple_list_item_1, addresses);
+                lv.setAdapter (adapter);
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(pickupServiceReciever);
+            } else if (status == Constants.STATE_ACTION_FAILED) {
+                Toast.makeText(getApplicationContext(), "Could not get pickups", Toast.LENGTH_SHORT).show();
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(pickupServiceReciever);
+            }
+        }
     }
 
 }

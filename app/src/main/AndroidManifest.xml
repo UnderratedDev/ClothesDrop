@@ -27,7 +27,12 @@
             android:name=".UserLoginService"
             android:exported="false" />
 
+
         <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
+
+        <service
+            android:name=".PickupService"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

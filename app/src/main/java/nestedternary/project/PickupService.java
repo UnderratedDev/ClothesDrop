@@ -2,7 +2,6 @@ package nestedternary.project;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.database.Cursor;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,20 +13,16 @@ import com.koushikdutta.ion.Ion;
 
 import java.util.ArrayList;
 
-import nestedternary.project.database.DatabaseHelper;
-import nestedternary.project.database.schema.BinLocations;
-
 /**
  * Created by Yudhvir on 16/05/2017.
  */
 
 public class PickupService extends IntentService {
 
-    private DatabaseHelper helper;
-    private ArrayList<BinLocations> binLocations;
+    public static ArrayList<Pickup> pickups = new ArrayList<>();
     // private int status = 0;
 
-    private BroadcastNotifier broadcaster = new BroadcastNotifier(this);
+    private BroadcastNotifier broadcaster   = new BroadcastNotifier(this);
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -40,10 +35,8 @@ public class PickupService extends IntentService {
 
     @Override
     protected void onHandleIntent (Intent workIntent) {
-
-        binLocations = new ArrayList<>();
         final String dataString = workIntent.getDataString ();
-        Log.d ("Background Service", dataString);
+        Log.e ("Background Service", dataString);
         if (dataString.contains ("createpickupforuser.php")) {
             Ion.with(getApplicationContext()).
                     load(dataString).
@@ -82,16 +75,32 @@ public class PickupService extends IntentService {
                                     } else {
                                         for (final JsonElement el : array) {
 
-                                            final JsonObject  json;
-                                            final JsonElement regionidElement;
-                                            final JsonElement addressElement;
-                                            final JsonElement notesElement;
-                                            final JsonElement dateElement;
-                                            final JsonElement bagQtyElement;
-                                            final String      name;
-                                            final String      address;
+                                            final JsonObject  json              = el.getAsJsonObject();
+                                            final JsonElement pickupIdElement   = json.get ("pickupid");
+                                            final JsonElement regionIdElement   = json.get ("regionid");
+                                            final JsonElement regionNameElement = json.get ("regionname");
+                                            final JsonElement bagQtyElement     = json.get ("bagQty");
+                                            final JsonElement addressElement    = json.get ("address");
+                                            final JsonElement notesElement      = json.get ("notes");
+                                            final JsonElement dateElement       = json.get ("date");
+                                            final JsonElement latElement        = json.get ("lat");
+                                            final JsonElement lngElement        = json.get ("lng");
+                                            final int         pickupid          = pickupIdElement.getAsInt ();
+                                            final int         regionid          = regionIdElement.getAsInt ();
+                                            final String      regionname        = regionNameElement.getAsString ();
+                                            final int         bagQty            = bagQtyElement.getAsInt ();
+                                            final String      address           = addressElement.getAsString ();
+                                            final String      notes             = notesElement.getAsString ();
+                                            final String      date              = dateElement.getAsString();
+                                            final float       lat               = latElement.getAsFloat ();
+                                            final float       lng               = lngElement.getAsFloat ();
 
-                                            json              = el.getAsJsonObject();
+
+                                            pickups.add (new Pickup (pickupid, bagQty, date, address, notes, lat, lng, regionname, regionid));
+
+                                            Log.e (":)", "" + pickups.size ());
+
+                                            // public Pickup (int pickupid, int bagQty, int date, String address, String notes, float lat, float lng, String name, int regionid) {
                                         }
                                     }
                                 }
