@@ -13,6 +13,11 @@ public class Region implements Serializable {
     private int id;
     private ArrayList<Integer> dates;
 
+    public Region (String name, int id) {
+        this.name = name;
+        this.id   = id;
+    }
+
     public Region (String name, int id, ArrayList<Integer> dates) {
         this.name  = name;
         this.id    = id;

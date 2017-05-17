@@ -27,6 +27,10 @@
             android:name=".UserLoginService"
             android:exported="false" />
 
+        <service
+            android:name=".PickupService"
+            android:exported="false" />
+
         <activity android:name=".MainActivity" />
 
         <meta-data
