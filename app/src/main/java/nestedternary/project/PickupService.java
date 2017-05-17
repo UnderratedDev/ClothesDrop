@@ -36,7 +36,7 @@ public class PickupService extends IntentService {
     @Override
     protected void onHandleIntent (Intent workIntent) {
         final String dataString = workIntent.getDataString ();
-        Log.e ("Background Service", dataString);,
+        Log.e ("Background Service", dataString);
         if (dataString.contains ("createpickupforuser.php")) {
             Ion.with(getApplicationContext()).
                     load(dataString).
