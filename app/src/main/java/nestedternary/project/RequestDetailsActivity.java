@@ -129,6 +129,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     public String URL() {
         final String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
 
+        boolean complete = false;
         // Toast.makeText (getApplicationContext (), regionId + " " + selected_region + " " + selected_date + " " + location_inputted + " " + bagQtyInputted, Toast.LENGTH_LONG).show ();
 
 
@@ -155,6 +156,9 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 Log.d("locationjson", result);
                                 JSONArray results;
                                 JSONObject obj = new JSONObject(result);
+                                if (!obj.getString("status").equalsIgnoreCase("OK")) {
+                                    return;
+                                }
                                 results = (JSONArray) obj.get("results");
                                 JSONObject temp = (JSONObject) results.get(0);
                                 JSONObject geometry = (JSONObject) temp.get("geometry");
