@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/edit_spinner"
+        android:layout_width="266dp"
+        android:layout_height="49dp"
+        android:layout_gravity="center"
+        android:background="@drawable/button_pink"
+        android:spinnerMode="dialog"
+        android:layout_marginBottom="10dp"/>
+
+    <EditText
+        android:id="@+id/edit_location"
+        android:layout_width="266dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Location"
+        android:textAlignment="center" />
+
+    <Spinner
+        android:id="@+id/edit_date_picker"
+        android:layout_width="266dp"
+        android:layout_height="49dp"
+        android:layout_gravity="center"
+        android:background="@drawable/button_pink"
+        android:spinnerMode="dialog"
+        android:layout_marginBottom="10dp"
+        />
+
+    <EditText
+        android:id="@+id/edit_bagQty"
+        android:layout_width="266dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_gravity="center"
+        android:inputType="number"
+        android:hint="Number Of Bags"/>
+
+    <ImageButton
+        android:id="@+id/edit_save"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/button_save"
+        android:layout_marginBottom="10dp"
+        />
+
+</LinearLayout>
