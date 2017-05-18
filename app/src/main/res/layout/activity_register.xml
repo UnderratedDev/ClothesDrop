@@ -40,7 +40,8 @@
         android:textColor="@color/colorWhite"
         android:textColorHint="@color/colorWhite"
         android:textAlignment="center"
-        android:inputType="textPassword" />
+        android:inputType="textPassword"
+        android:layout_marginBottom="25dp"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -67,14 +68,30 @@
         android:textColor="@color/colorWhite"
         android:layout_gravity="center"/>
 
-    <Button
-        android:id="@+id/button_register_login"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Register"
-        android:enabled="false"
-        android:onClick="registerButton"/>
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:gravity="center"
+        android:layout_marginTop="10dp">
+
+        <ImageButton
+            android:id="@+id/button_register_login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:layout_gravity="center"
+            android:scaleType="fitEnd"
+            android:background="@android:color/transparent"
+            android:adjustViewBounds="true"
+            android:clickable="false"
+            android:onClick="registerButton"
+            android:src="@drawable/button_register_disabled"/>
+
+    </LinearLayout>
+
+
 
 
 </LinearLayout>

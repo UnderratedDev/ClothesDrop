@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,12 +28,19 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
 
-        final Button registerButton = (Button) findViewById(R.id.button_register_login);
+        final ImageButton registerButton = (ImageButton) findViewById(R.id.button_register_login);
         CheckBox agreeCheckbox = (CheckBox) findViewById(R.id.checkBox_agree);
 
         agreeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    registerButton.setImageResource(R.drawable.button_register);
+                    registerButton.setClickable(true);
+                } else {
+                    registerButton.setImageResource(R.drawable.button_register_disabled);
+                    registerButton.setClickable(true);
+                }
                 registerButton.setEnabled(isChecked);
             }
         });
