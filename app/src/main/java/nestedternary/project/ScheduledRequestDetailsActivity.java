@@ -19,7 +19,8 @@ public class ScheduledRequestDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scheduled_request_details);
-        Button region  = (Button) findViewById (R.id.details_region), location = (Button) findViewById (R.id.details_location), date = (Button) findViewById (R.id.details_date), bagQty = (Button) findViewById (R.id.details_bagQty);
+        Button region  = (Button) findViewById (R.id.details_region), date = (Button) findViewById (R.id.details_date), bagQty = (Button) findViewById (R.id.details_bagQty);
+        TextView location = (TextView) findViewById (R.id.details_location);
         TextView notes = (TextView) findViewById(R.id.details_notes);
         Intent intent  = getIntent();
         p              = (Pickup) intent.getSerializableExtra ("selectedPickup");
