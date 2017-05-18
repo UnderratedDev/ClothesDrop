@@ -63,6 +63,7 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/button_cancel_pickup"
         android:layout_marginBottom="10dp"
+        android:onClick="cancel"
         />
 
     <ImageButton
@@ -73,6 +74,7 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/button_save"
         android:layout_marginBottom="10dp"
+        android:onClick="save"
         />
 
 </LinearLayout>

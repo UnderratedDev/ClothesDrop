@@ -108,8 +108,28 @@ public class PickupService extends IntentService {
                                 }
                             }
                     );
+        } else if (dataString.contains ("modifypickupforuser.php")) {
+            Ion.with(getApplicationContext()).
+                    load(dataString).
+                    asJsonObject()
+                    .setCallback(
+                            new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject json) {
+                                    if (e != null) {
+                                        Toast.makeText (getApplicationContext (), e.toString (), Toast.LENGTH_SHORT).show ();
+                                    } else {
+                                            final JsonElement statusElement = json.get ("status");
+                                            final String status             = statusElement.getAsString ();
+
+                                            if (!status.equalsIgnoreCase ("success"))
+                                                broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_FAILED);
+
+                                        broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
+                                    }
+                                }
+                            }
+                    );
         }
-
-
     }
 }

@@ -34,6 +34,10 @@
             android:name=".PickupService"
             android:exported="false" />
 
+        <service
+            android:name=".AddressLatLngService"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCYQ08FWqNK72ejOB7EXEU_ahN-dPjXrGo" />

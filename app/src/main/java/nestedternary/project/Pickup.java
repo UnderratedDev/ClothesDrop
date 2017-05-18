@@ -1,6 +1,12 @@
 package nestedternary.project;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Yudhvir on 16/05/2017.
@@ -30,5 +36,21 @@ public class Pickup implements Serializable {
 
     public int getbagQty () {
         return bagQty;
+    }
+
+    public int getUnixTimestampDate () {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date dateObj = df.parse (date);
+            Log.e (":)", dateObj.toString());
+            return (int)(dateObj.getTime () / 1000);
+        } catch (ParseException ex) {
+            ex.printStackTrace ();
+        }
+         return 0;
+    }
+
+    public int getId () {
+        return pickupid;
     }
 }

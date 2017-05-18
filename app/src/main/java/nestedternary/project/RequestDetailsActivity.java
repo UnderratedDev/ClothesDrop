@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,10 +37,10 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
     ArrayAdapter<String> adapter, dateAdapter;
     // ArrayList<String> regionList = new ArrayList<>();
-    HashMap<Region, ArrayList<Integer>> regionsMap = new HashMap<>();
+    // HashMap<Region, ArrayList<Integer>> regionsMap = new HashMap<>();
     int regionId;
     Spinner regions, date_picker;
-    TextView location, bagQty;
+    EditText location, bagQty, notes;
 
     private String lat, lng;
 
@@ -50,7 +51,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_details);
         Intent intent = getIntent ();
-        regionsMap = (HashMap<Region, ArrayList<Integer>>)intent.getSerializableExtra ("hMap");
+        // regionsMap = (HashMap<Region, ArrayList<Integer>>)intent.getSerializableExtra ("hMap");
         // regionList = intent.getStringArrayListExtra("regionList");
         // what happens if location is never set, this can happen if GSP is not enabled
         String address = intent.getStringExtra("location");
@@ -60,7 +61,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
         ArrayList<String> regionNames = new ArrayList<>();
 
-        for (Region r : regionsMap.keySet())
+        for (Region r : MainSchedulingActivity.regions.keySet())
             regionNames.add(r.getName());
 
         adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, regionNames);
@@ -68,18 +69,19 @@ public class RequestDetailsActivity extends AppCompatActivity {
         // adapter = new HashMapRegionAdapter (regionsMap);
 
         // adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        location    = (TextView) findViewById (R.id.location);
-        bagQty      = (TextView) findViewById (R.id.bagQty);
+        location    = (EditText) findViewById (R.id.location);
+        bagQty      = (EditText) findViewById (R.id.bagQty);
+        notes       = (EditText) findViewById (R.id.notes);
 
-        regions.setAdapter(adapter);
+                regions.setAdapter(adapter);
 
         regions.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Region obj = (Region)(regionsMap.keySet()).toArray ()[position];
+                Region obj = (Region)(MainSchedulingActivity.regions.keySet()).toArray ()[position];
                 regionId = obj.getId ();
-                ArrayList<Integer> numericDates  = regionsMap.get (obj);
+                ArrayList<Integer> numericDates  = MainSchedulingActivity.regions.get (obj);
                 ArrayList<String> formattedDates = new ArrayList<>();
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat ("yyyy-MM-dd");
                 simpleDateFormat.setTimeZone (TimeZone.getTimeZone ("GMT-7"));
@@ -145,9 +147,9 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
                             }
 
-                            String url = (("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
-                                    + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=").replaceAll ("\n", "")).replaceAll (" ", "%20");
-
+                            //String url = (("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
+                                   // + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=" + encode (notes_inputted)).replaceAll ("\n", "")).replaceAll (" ", "%20");
+                            String url = URL ();
                             mServiceIntent.setData (Uri.parse (url));
                             // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
                             startService (mServiceIntent);
@@ -166,6 +168,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
     public String URL() {
         final String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
+        final String notes_inputted = notes.getText() != null ? notes.getText().toString() : "";
 
         boolean complete = false;
         // Toast.makeText (getApplicationContext (), regionId + " " + selected_region + " " + selected_date + " " + location_inputted + " " + bagQtyInputted, Toast.LENGTH_LONG).show ();
@@ -218,7 +221,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
            // return null;
 
         return ("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
-                + "&address=" + address + "&lat=" + lat + "&lng=" + lng + "&date=" + selected_date +  "&notes=").replaceAll ("\n", "");
+                + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=" + encode (notes_inputted)).replaceAll ("\n", "");
     }
 
     public String encode(String word) {

@@ -43,7 +43,8 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
     String address   = null;
     boolean location = false, region = false;
-    HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
+    // HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
+    static HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
     ArrayList<String> addresses;
     ListView lv;
     ArrayAdapter<String> adapter;
@@ -102,9 +103,9 @@ public class MainSchedulingActivity extends AppCompatActivity {
         }
         else { */
             // intent.putStringArrayListExtra("regionList", regionInfo);
-            intent.putExtra ("hMap", regions);
-            intent.putExtra("location", address);
-            startActivity(intent);
+        // intent.putExtra ("hMap", regions);
+        intent.putExtra("location", address);
+        startActivity(intent);
         // }
 
 
@@ -187,7 +188,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
     }
 
-
     public void regionRequest(final View view) {
         regions.clear ();
         // ListRegions.clear();
@@ -213,7 +213,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                 {
                                     for(final JsonElement element : array)
                                     {
-
                                         final JsonObject json;
                                         final JsonArray  datesJson;
                                         final JsonElement nameElement, idElement, dates;
@@ -234,8 +233,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                             datesList.add (el.getAsInt ());
 
                                         regions.put (new Region (name, id, datesList), datesList);
-
-                                        Log.e (":)", name + " " + id + datesList.size ());
                                         // ListRegions.add(name);
                                     }
                                     //region = true;
@@ -262,12 +259,66 @@ public class MainSchedulingActivity extends AppCompatActivity {
                 lv.setAdapter (adapter);
                 lv.setOnItemClickListener (new AdapterView.OnItemClickListener () {
                     @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Pickup p = PickupService.pickups.get (position);
-                        Intent intent = new Intent (MainSchedulingActivity.this, ScheduledRequestDetailsActivity.class);
-                        intent.putExtra ("selectedPickup", p);
-                        startActivity (intent);
-                        finish ();
+                    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                        regions.clear ();
+                        // ListRegions.clear();
+                        Ion.with(getApplicationContext ()).
+                                load("http://mail.posabilities.ca:8000/api/schedulingjson.php").
+                                asJsonArray().
+                                setCallback(
+                                        new FutureCallback<JsonArray>()
+                                        {
+
+                                            @Override
+                                            public void onCompleted(final Exception ex,
+                                                                    final JsonArray array)
+                                            {
+                                                if(ex != null)
+                                                {
+                                                    Toast.makeText(MainSchedulingActivity.this,
+                                                            "Error: " + ex.getMessage(),
+                                                            Toast.LENGTH_LONG).show();
+
+                                                }
+                                                else
+                                                {
+                                                    for(final JsonElement element : array)
+                                                    {
+                                                        final JsonObject json;
+                                                        final JsonArray  datesJson;
+                                                        final JsonElement nameElement, idElement, dates;
+                                                        final String             name;
+                                                        final int                id;
+                                                        ArrayList<Integer> datesList = new ArrayList <>();
+
+                                                        json              = element.getAsJsonObject();
+                                                        nameElement       = json.get ("name");
+                                                        idElement         = json.get ("id");
+                                                        dates             = json.get ("regionDayPicker");
+
+                                                        name              = nameElement.getAsString();
+                                                        id                = idElement.getAsInt ();
+                                                        datesJson         = dates.getAsJsonArray();
+
+                                                        for (JsonElement el : datesJson)
+                                                            datesList.add (el.getAsInt ());
+
+                                                        regions.put (new Region (name, id, datesList), datesList);
+                                                        // ListRegions.add(name);
+                                                    }
+                                                    //region = true;
+                                                    //if(region && location)
+                                                     // ListRegions);
+                                                    Pickup p = PickupService.pickups.get (position);
+                                                    Intent intent = new Intent (MainSchedulingActivity.this, ScheduledRequestDetailsActivity.class);
+                                                    // intent.putExtra ("hMap", regions);
+                                                    intent.putExtra ("selectedPickup", p);
+                                                    startActivity (intent);
+                                                    finish ();
+                                                }
+
+                                            }
+                                        });
                     }
                 });
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(pickupServiceReciever);
