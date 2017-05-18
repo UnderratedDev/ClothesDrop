@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     tools:context="nestedternary.project.RequestDetailsActivity"
     android:weightSum="1"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/splash_background">
 
     <Spinner
         android:id="@+id/spinner"
