@@ -17,7 +17,7 @@
             android:id="@+id/txt_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
+            android:layout_weight="0.8"
             android:ems="10"
             android:hint="E-mail Address"
             android:layout_gravity="center"
@@ -45,7 +45,7 @@
             android:textColorHint="@color/colorWhite"
             android:textAlignment="center"
             android:inputType="textPassword"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.8"/>
 
     </LinearLayout>
 
