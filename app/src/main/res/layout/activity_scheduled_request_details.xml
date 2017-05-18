@@ -46,6 +46,16 @@
         android:text="Number of Bags"
         android:layout_marginBottom="10dp" />
 
+    <TextView
+        android:id="@+id/details_notes"
+        android:layout_width="266dp"
+        android:layout_height="wrap_content"
+        android:minLines="2"
+        android:maxLines="2"
+        android:ems="10"
+        android:layout_gravity="center"
+        android:text="Pick-up Instructions"/>
+
     <ImageButton
         android:id="@+id/imageButton3"
         android:layout_width="wrap_content"
@@ -54,7 +64,6 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/button_edit"
         android:layout_marginBottom="10dp"
-        android:onClick="cancel"
         />
 
 </LinearLayout>

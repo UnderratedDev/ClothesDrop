@@ -45,6 +45,16 @@
         android:inputType="number"
         android:hint="Number Of Bags"/>
 
+    <EditText
+        android:id="@+id/edit_notes"
+        android:layout_width="266dp"
+        android:layout_height="wrap_content"
+        android:minLines="2"
+        android:maxLines="2"
+        android:ems="10"
+        android:layout_gravity="center"
+        android:hint="Pick-up Instructions"/>
+
     <ImageButton
         android:id="@+id/edit_cancel"
         android:layout_width="wrap_content"
