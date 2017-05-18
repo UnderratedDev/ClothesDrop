@@ -54,7 +54,7 @@
         android:scaleType="centerInside"
         app:srcCompat="@drawable/button_edit"
         android:layout_marginBottom="10dp"
-        android:onClick="cancel"
+        android:onClick="edit"
         />
 
 </LinearLayout>

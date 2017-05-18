@@ -1,10 +1,12 @@
 package nestedternary.project;
 
+import java.io.Serializable;
+
 /**
  * Created by Yudhvir on 16/05/2017.
  */
 
-public class Pickup {
+public class Pickup implements Serializable {
 
     private Region region;
     private int    pickupid, bagQty;
@@ -20,5 +22,13 @@ public class Pickup {
         this.lat = lat;
         this.lng = lng;
         this.region = new Region (name, regionid);
+    }
+
+    public Region getRegion () {
+        return region;
+    }
+
+    public int getbagQty () {
+        return bagQty;
     }
 }
