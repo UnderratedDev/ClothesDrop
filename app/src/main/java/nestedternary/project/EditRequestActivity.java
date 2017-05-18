@@ -120,6 +120,12 @@ public class EditRequestActivity extends AppCompatActivity {
         finish ();
     }
 
+    public void callUs(final View view){
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:7782584377"));
+        startActivity(intent);
+    }
+
     public void save (final View view) {
         final String location_inputted = location.getText ().toString ();
 

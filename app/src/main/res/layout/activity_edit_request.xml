@@ -56,14 +56,14 @@
         android:hint="Pick-up Instructions"/>
 
     <ImageButton
-        android:id="@+id/edit_cancel"
+        android:id="@+id/edit_call_us"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:background="@android:color/transparent"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/button_cancel_pickup"
+        app:srcCompat="@drawable/button_call_us_instead"
         android:layout_marginBottom="10dp"
-        android:onClick="cancel"
+        android:onClick="callUs"
         />
 
     <ImageButton
