@@ -72,6 +72,7 @@ public class Donate extends AppCompatActivity {
                                     final JsonElement statusElement = json.get ("status");
                                     final String status             = statusElement.getAsString ();
                                     Log.e (":)", status);
+                                    finish ();
                                 }
                             }
                         }
