@@ -202,15 +202,20 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 JSONObject geometry = (JSONObject) temp.get("geometry");
                                 JSONObject location = (JSONObject) geometry.get("location");
 
-                                lat = location.get("lat").toString();
-                                lng = location.get("lng").toString();
-                            } catch (Exception ex) {
+                            lat = location.get("lat").toString();
+                            lng = location.get("lng").toString();
+                        } catch (Exception ex) {
 
-                            }
-                            Log.d("latlng", lat + " " + lng);
                         }
+                        Log.d("latlng", lat + " " + lng);
                     }
-                });
+                }
+            });
+
+        while (lat == null || lng == null);
+
+        // if (lat == null || lng == null)
+           // return null;
 
         return ("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                 + "&address=" + address + "&lat=" + lat + "&lng=" + lng + "&date=" + selected_date +  "&notes=").replaceAll ("\n", "");
