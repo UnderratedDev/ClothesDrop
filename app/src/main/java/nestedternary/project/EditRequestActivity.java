@@ -140,7 +140,6 @@ public class EditRequestActivity extends AppCompatActivity {
     }
 
     public String encode(String word) {
-
         try {
             return Base64.encodeToString(word.getBytes("UTF-8"), Base64.DEFAULT);
         } catch (Exception ex){
