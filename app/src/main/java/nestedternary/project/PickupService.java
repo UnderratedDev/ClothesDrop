@@ -62,6 +62,7 @@ public class PickupService extends IntentService {
                     );
         } else if (dataString.contains ("getpickupsforuser.php")) {
             // FINISH IMPLEMENTING AFTER BACKEND IS UP
+            pickups.clear();
             Ion.with(getApplicationContext()).
                     load(dataString).
                     asJsonArray()

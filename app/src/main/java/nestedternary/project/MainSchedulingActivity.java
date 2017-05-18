@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -249,7 +250,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
     private class PickupServiceReciever extends BroadcastReceiver {
 
         private PickupServiceReciever() {
-
         }
 
         @Override
@@ -260,6 +260,16 @@ public class MainSchedulingActivity extends AppCompatActivity {
                     addresses.add (p.address);
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext (), android.R.layout.simple_list_item_1, addresses);
                 lv.setAdapter (adapter);
+                lv.setOnItemClickListener (new AdapterView.OnItemClickListener () {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Pickup p = PickupService.pickups.get (position);
+                        Intent intent = new Intent (MainSchedulingActivity.this, ScheduledRequestDetailsActivity.class);
+                        intent.putExtra ("selectedPickup", p);
+                        startActivity (intent);
+                        finish ();
+                    }
+                });
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(pickupServiceReciever);
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText(getApplicationContext(), "Could not get pickups", Toast.LENGTH_SHORT).show();
