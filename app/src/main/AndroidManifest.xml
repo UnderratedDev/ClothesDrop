@@ -75,7 +75,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ForgotPasswordActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".ScheduledRequestDetailsActivity" />
         <activity android:name=".EditRequestActivity"></activity>
     </application>
