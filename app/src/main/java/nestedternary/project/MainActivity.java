@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
             Intents's "data" field
         */
 
+        /*
+
         Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
         mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/androidsendjson.php"));
         startService (mServiceIntent);
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
 
+*/
         markers                     = new ArrayList<>();
         add_donate_qty_btn          = (ImageButton) findViewById (R.id.add_donate_qty_btn);
         directions_btn              = (ImageButton) findViewById (R.id.directions_btn);
@@ -165,6 +168,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void pullDataFromServer () {
+        Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
+        mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/androidsendjson.php"));
+        startService (mServiceIntent);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_ACTION);
+        backendReceiver = new BackendPullServiceReceiver();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
     }
 
     private void setupDb () {
@@ -218,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
                         cur_location = location;
                     }
                 });
+                pullDataFromServer ();
                 // new AsyncTaskRunnerFetch().execute();
             }
         });
