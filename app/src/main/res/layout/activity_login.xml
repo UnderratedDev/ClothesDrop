@@ -82,7 +82,7 @@
         android:text="Register"
         android:onClick="registerPage"
         android:textSize="23sp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="25dp"/>
 
     <TextView
         android:id="@+id/forgot_password_text"
