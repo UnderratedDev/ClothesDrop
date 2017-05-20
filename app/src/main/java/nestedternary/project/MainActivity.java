@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.GpsStatus;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -754,6 +755,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Can reduce accuracy of location manager for battery
+        // LocationListener mlocListener = new MyLocationListener();
+        // locationManager.removeUpdates ();
+
         unregisterReceiver(networkStateReceiver);
     }
 
