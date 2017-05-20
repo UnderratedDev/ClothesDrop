@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -54,7 +55,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
         Intent intent = getIntent ();
         // regionsMap = (HashMap<Region, ArrayList<Integer>>)intent.getSerializableExtra ("hMap");
         // regionList = intent.getStringArrayListExtra("regionList");
-        // what happens if location is never set, this can happen if GSP is not enabled
+        // what happens if location is never set, this can happen if GPS is not enabled
         String address = intent.getStringExtra("location");
 
         regions     = (Spinner)findViewById(R.id.spinner);
@@ -287,5 +288,4 @@ public class RequestDetailsActivity extends AppCompatActivity {
             }
         }
     }
-
 }

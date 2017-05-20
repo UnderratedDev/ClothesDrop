@@ -57,23 +57,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_scheduling);
 
-        lv = (ListView) findViewById (android.R.id.list);
-        addresses = new ArrayList<>();
-
-        Intent mServiceIntent = new Intent (MainSchedulingActivity.this, PickupService.class);
-        mServiceIntent.setData (Uri.parse (URL()));
-        // mServiceIntent.setData (Uri.parse (("http://mail.posabilities.ca:8000/api/getpickupsforuser.php?userid=NTkxYjMxNzljMWI3ZA==").replaceAll ("\n", "")));
-        // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
-
-        startService (mServiceIntent);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.BROADCAST_ACTION);
-
-        pickupServiceReciever = new MainSchedulingActivity.PickupServiceReciever();
-
-        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
-
-        // (ListView) findViewById (android.R.layout.act)
+        recieveData ();
     }
 
     public String URL() {
@@ -106,9 +90,33 @@ public class MainSchedulingActivity extends AppCompatActivity {
         // intent.putExtra ("hMap", regions);
         intent.putExtra("location", address);
         startActivity(intent);
+        // finish ();
         // }
 
 
+    }
+
+    private void recieveData () {
+        lv = (ListView) findViewById (android.R.id.list);
+        addresses = new ArrayList<>();
+
+        Intent mServiceIntent = new Intent (MainSchedulingActivity.this, PickupService.class);
+        mServiceIntent.setData (Uri.parse (URL()));
+        // mServiceIntent.setData (Uri.parse (("http://mail.posabilities.ca:8000/api/getpickupsforuser.php?userid=NTkxYjMxNzljMWI3ZA==").replaceAll ("\n", "")));
+        // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
+
+        startService (mServiceIntent);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_ACTION);
+
+        pickupServiceReciever = new MainSchedulingActivity.PickupServiceReciever();
+
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
+    }
+
+    public void onResume () {
+        super.onResume ();
+        recieveData ();
     }
 
     public void jsonRequest(final View view) {
@@ -317,7 +325,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                                     // intent.putExtra ("hMap", regions);
                                                     intent.putExtra ("selectedPickup", p);
                                                     startActivity (intent);
-                                                    finish ();
+                                                    // finish ();
                                                 }
 
                                             }
