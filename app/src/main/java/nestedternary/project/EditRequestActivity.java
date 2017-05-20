@@ -35,7 +35,7 @@ public class EditRequestActivity extends AppCompatActivity {
     // private HashMap<Region, ArrayList<Integer>> regionsMap;
     private Spinner regions, date_picker;
     private ArrayAdapter<String> adapter, dateAdapter;
-    private int regionId;
+    private int regionId = -1;
     private String address;
     private HashMap<Region, ArrayList<Integer>> regionsMap;
     private EditText location, bagQty, notes;
@@ -105,6 +105,8 @@ public class EditRequestActivity extends AppCompatActivity {
                     Date date = new Date(numericDate * 1000L);
                     formattedDates.add(simpleDateFormat.format(date));
                 }
+                if (formattedDates.isEmpty ())
+                    formattedDates.add ("No Available days");
                 dateAdapter = new ArrayAdapter<>(getApplicationContext (), android.R.layout.simple_spinner_item, formattedDates);
                 date_picker.setAdapter (dateAdapter);
             }
@@ -114,6 +116,7 @@ public class EditRequestActivity extends AppCompatActivity {
 
             }
         });
+        regions.setSelection (adapter.getPosition (p.getRegion().getName ()), true);
     }
 
     public void cancel (final View view) {
@@ -186,6 +189,17 @@ public class EditRequestActivity extends AppCompatActivity {
             if (status == Constants.STATE_ACTION_COMPLETE) {
                 final String  selected_date = date_picker.getSelectedItem ().toString (), bagQtyInputted = bagQty.getText().toString();
                 final String notes_inputted = notes.getText() != null ? notes.getText().toString() : "";
+
+                if (LoginActivity.userId == null || regionId == -1 || bagQtyInputted == null || bagQtyInputted.isEmpty() || address == null || address.isEmpty() || selected_date == null || selected_date.equalsIgnoreCase ("No Available days")) {
+                    Toast.makeText (getApplicationContext (), "Edit failed", Toast.LENGTH_LONG).show ();
+                    return;
+                }
+
+                if (Integer.parseInt (bagQtyInputted) < 20) {
+                    Toast.makeText (getApplicationContext (), "Bag Qty must be equal to or greater than 20", Toast.LENGTH_LONG).show ();
+                    return;
+                }
+
                 String url = ("http://mail.posabilities.ca:8000/api/modifypickupforuser.php?pickupid=" + encode("" + p.getId ()) + "&userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                         + "&address=" + encode (address) + "&lat=" + encode (AddressLatLngService.lat) + "&lng=" + encode (AddressLatLngService.lng) + "&date=" + encode (selected_date) +  "&notes=" + encode (notes_inputted)).replaceAll ("\n", "");
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(addresServiceReciever);
