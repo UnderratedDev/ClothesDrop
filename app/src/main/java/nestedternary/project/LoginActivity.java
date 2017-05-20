@@ -40,6 +40,17 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login (final View view) {
         loginButton.setEnabled(false);
+
+        TextView emailTextView    = ((TextView) findViewById(R.id.txt_username));
+        String email = emailTextView.getText().toString ();
+
+        if (!email.matches("^[a-z A-Z]+[a-z A-Z 0-9]*@[a-z A-Z]+[a-z A-Z 0-9]*\\.[a-z A-Z]+$")) {
+            Toast.makeText(LoginActivity.this,
+                    "Invalid E-mail Was Entered",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Intent mServiceIntent = new Intent (LoginActivity.this, UserLoginService.class);
         mServiceIntent.setData (Uri.parse (URL()));
         // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
