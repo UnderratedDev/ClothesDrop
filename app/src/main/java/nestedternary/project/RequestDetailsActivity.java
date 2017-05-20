@@ -162,6 +162,17 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                    // + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=" + encode (notes_inputted)).replaceAll ("\n", "")).replaceAll (" ", "%20");
                             String url = (("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                                     + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=").replaceAll ("\n", "")).replaceAll (" ", "%20");
+
+                            if (LoginActivity.userId == null || regionId == -1 || bagQtyInputted.isEmpty() || address.isEmpty() || selected_date == null || selected_date.equalsIgnoreCase("No Available days")) {
+                                Toast.makeText(getApplicationContext(), "Unable to proccess request", Toast.LENGTH_LONG).show ();
+                                return;
+                            }
+
+                            if (Integer.parseInt (bagQtyInputted) < 20) {
+                                Toast.makeText (getApplicationContext (), "Bag Qty must be equal to or greater than 20", Toast.LENGTH_LONG).show ();
+                                return;
+                            }
+
                             if (url != null && !url.isEmpty()) {
                                 mServiceIntent.setData(Uri.parse(url));
                                 // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
