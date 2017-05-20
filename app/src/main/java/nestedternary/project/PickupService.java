@@ -54,6 +54,8 @@ public class PickupService extends IntentService {
 
                                         if (status.equalsIgnoreCase ("success"))
                                             broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
+                                        else if (status.equalsIgnoreCase ("User limit reached"))
+                                            broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_LIMIT_REACHED);
                                         else
                                             broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_FAILED);
                                         }

@@ -281,6 +281,9 @@ public class RequestDetailsActivity extends AppCompatActivity {
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText(getApplicationContext(), "Could not create request", Toast.LENGTH_SHORT).show();
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(pickupServiceReciever);
+            } else if (status == Constants.STATE_ACTION_LIMIT_REACHED) {
+                Toast.makeText(getApplicationContext(), "User Limit Reached", Toast.LENGTH_SHORT).show();
+                LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(pickupServiceReciever);
             }
         }
     }
