@@ -6,6 +6,15 @@
     android:gravity="center"
     android:background="@color/splash_background">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please Login To Request A Pick-up"
+        android:textColor="@color/colorWhite"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/splash_background">
 
     <Spinner
         android:id="@+id/edit_spinner"
@@ -24,6 +25,7 @@
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Location"
+        android:hint="Pick-up Address"
         android:textAlignment="center" />
 
     <Spinner
@@ -61,7 +63,7 @@
         android:layout_height="50dp"
         android:background="@android:color/transparent"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/button_call_us_instead"
+        app:srcCompat="@drawable/button_cancel_pickup"
         android:layout_marginBottom="10dp"
         android:onClick="callUs"
         />
