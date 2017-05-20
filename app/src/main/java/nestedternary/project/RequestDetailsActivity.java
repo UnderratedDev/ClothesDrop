@@ -91,7 +91,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
                     Date date = new Date(numericDate * 1000L);
                     formattedDates.add(simpleDateFormat.format(date));
                 }
-                Toast.makeText(RequestDetailsActivity.this, "Hello", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(RequestDetailsActivity.this, "Hello", Toast.LENGTH_SHORT).show();
                 Log.e (":|", "" + formattedDates.size());
                 if (formattedDates.isEmpty ())
                     formattedDates.add ("No Available days");
@@ -171,8 +171,8 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
                                 LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
                                 // Background serivce to complete create pickup
-                            } else
-                                Toast.makeText(getApplicationContext(), "Unable to proccess request", Toast.LENGTH_LONG).show ();
+                            }// else
+                               // Toast.makeText(getApplicationContext(), "Unable to proccess request", Toast.LENGTH_LONG).show ();
                         }
                     }
                 });
@@ -180,7 +180,13 @@ public class RequestDetailsActivity extends AppCompatActivity {
     }
 
     public String URL() {
-        final String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
+
+        final Object selected_region_obj = regions.getSelectedItem(), selected_date_obj = date_picker.getSelectedItem();
+        final Editable location_inputted_obj = location.getText(), bagQtyInputted_obj = bagQty.getText();
+        if (selected_region_obj == null || selected_date_obj == null || location_inputted_obj == null || bagQtyInputted_obj == null)
+            return null;
+        final String selected_region = selected_region_obj.toString(), selected_date = selected_date_obj.toString(), location_inputted = location_inputted_obj.toString(), bagQtyInputted = bagQtyInputted_obj.toString();
+
         final String notes_inputted = notes.getText() != null ? notes.getText().toString() : "";
 
         boolean complete = false;
@@ -218,23 +224,30 @@ public class RequestDetailsActivity extends AppCompatActivity {
                                 JSONObject geometry = (JSONObject) temp.get("geometry");
                                 JSONObject location = (JSONObject) geometry.get("location");
 
-                            lat = location.get("lat").toString();
-                            lng = location.get("lng").toString();
-                        } catch (Exception ex) {
+                                lat = location.get("lat").toString();
+                                lng = location.get("lng").toString();
+                            } catch (Exception ex) {
 
+                            }
+                            Log.d("latlng", lat + " " + lng);
                         }
-                        Log.d("latlng", lat + " " + lng);
                     }
-                }
-            });
+                });
 
-        while (lat == null || lng == null);
+        while (lat == null || lng == null) ;
 
         // if (lat == null || lng == null)
-           // return null;
+        // return null;
 
-        if (LoginActivity.userId == null || regionId == -1 || bagQtyInputted == null || bagQtyInputted.isEmpty() || address == null || address.isEmpty() || selected_date == null || selected_date.equalsIgnoreCase ("No Available days"))
+        if (LoginActivity.userId == null || regionId == -1 || bagQtyInputted.isEmpty() || address.isEmpty() || selected_date == null || selected_date.equalsIgnoreCase("No Available days")) {
+            Toast.makeText(getApplicationContext(), "Unable to proccess request", Toast.LENGTH_LONG).show ();
             return null;
+        }
+
+        if (Integer.parseInt (bagQtyInputted) < 20) {
+            Toast.makeText (getApplicationContext (), "Bag Qty must be equal to or greater than 20", Toast.LENGTH_LONG).show ();
+            return null;
+        }
 
         return ("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                 + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=" + encode (notes_inputted)).replaceAll ("\n", "");
