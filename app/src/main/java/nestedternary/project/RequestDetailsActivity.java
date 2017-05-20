@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -38,7 +39,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter, dateAdapter;
     // ArrayList<String> regionList = new ArrayList<>();
     // HashMap<Region, ArrayList<Integer>> regionsMap = new HashMap<>();
-    int regionId;
+    int regionId = -1;
     Spinner regions, date_picker;
     EditText location, bagQty, notes;
 
@@ -61,8 +62,9 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
         ArrayList<String> regionNames = new ArrayList<>();
 
-        for (Region r : MainSchedulingActivity.regions.keySet())
+        for (Region r : MainSchedulingActivity.regions.keySet()) {
             regionNames.add(r.getName());
+        }
 
         adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, regionNames);
 
@@ -73,7 +75,7 @@ public class RequestDetailsActivity extends AppCompatActivity {
         bagQty      = (EditText) findViewById (R.id.bagQty);
         notes       = (EditText) findViewById (R.id.notes);
 
-                regions.setAdapter(adapter);
+        regions.setAdapter(adapter);
 
         regions.setOnItemSelectedListener (new AdapterView.OnItemSelectedListener() {
 
@@ -89,6 +91,10 @@ public class RequestDetailsActivity extends AppCompatActivity {
                     Date date = new Date(numericDate * 1000L);
                     formattedDates.add(simpleDateFormat.format(date));
                 }
+                Toast.makeText(RequestDetailsActivity.this, "Hello", Toast.LENGTH_SHORT).show();
+                Log.e (":|", "" + formattedDates.size());
+                if (formattedDates.isEmpty ())
+                    formattedDates.add ("No Available days");
                 dateAdapter = new ArrayAdapter<>(getApplicationContext (), android.R.layout.simple_spinner_item, formattedDates);
                 date_picker.setAdapter (dateAdapter);
             }
@@ -117,7 +123,11 @@ public class RequestDetailsActivity extends AppCompatActivity {
     public void requestPickup (final View view) {
         final Intent mServiceIntent = new Intent (RequestDetailsActivity.this, PickupService.class);
 
-        final String selected_region = regions.getSelectedItem ().toString (), selected_date = date_picker.getSelectedItem ().toString (), location_inputted = location.getText ().toString (), bagQtyInputted = bagQty.getText().toString();
+        final Object selected_region_obj = regions.getSelectedItem (), selected_date_obj = date_picker.getSelectedItem ();
+        final Editable location_inputted_obj = location.getText (), bagQtyInputted_obj = bagQty.getText();
+        if (selected_region_obj == null || selected_date_obj == null || location_inputted_obj == null || bagQtyInputted_obj == null)
+            return;
+        final String selected_region = selected_region_obj.toString (), selected_date = selected_date_obj.toString (), location_inputted = location_inputted_obj.toString (), bagQtyInputted = bagQtyInputted_obj.toString();
         final String address = location_inputted;
         String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + Uri.encode(location_inputted);
 
@@ -150,16 +160,19 @@ public class RequestDetailsActivity extends AppCompatActivity {
                             //String url = (("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                                    // + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=" + encode (notes_inputted)).replaceAll ("\n", "")).replaceAll (" ", "%20");
                             String url = URL ();
-                            mServiceIntent.setData (Uri.parse (url));
-                            // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
-                            startService (mServiceIntent);
+                            if (url != null && !url.isEmpty()) {
+                                mServiceIntent.setData(Uri.parse(url));
+                                // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
+                                startService(mServiceIntent);
 
-                            IntentFilter intentFilter = new IntentFilter();
-                            intentFilter.addAction(Constants.BROADCAST_ACTION);
-                            pickupServiceReciever = new RequestDetailsActivity.PickupServiceReciever();
+                                IntentFilter intentFilter = new IntentFilter();
+                                intentFilter.addAction(Constants.BROADCAST_ACTION);
+                                pickupServiceReciever = new RequestDetailsActivity.PickupServiceReciever();
 
-                            LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
-                            // Background serivce to complete create pickup
+                                LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(pickupServiceReciever, intentFilter);
+                                // Background serivce to complete create pickup
+                            } else
+                                Toast.makeText(getApplicationContext(), "Unable to proccess request", Toast.LENGTH_LONG).show ();
                         }
                     }
                 });
@@ -219,6 +232,9 @@ public class RequestDetailsActivity extends AppCompatActivity {
 
         // if (lat == null || lng == null)
            // return null;
+
+        if (LoginActivity.userId == null || regionId == -1 || bagQtyInputted == null || bagQtyInputted.isEmpty() || address == null || address.isEmpty() || selected_date == null || selected_date.equalsIgnoreCase ("No Available days"))
+            return null;
 
         return ("http://mail.posabilities.ca:8000/api/createpickupforuser.php?userid=" + encode(LoginActivity.userId) + "&regionid=" + encode(Integer.toString (regionId)) + "&bagqty=" + encode (bagQtyInputted)
                 + "&address=" + encode (address) + "&lat=" + encode (lat) + "&lng=" + encode (lng) + "&date=" + encode (selected_date) +  "&notes=" + encode (notes_inputted)).replaceAll ("\n", "");

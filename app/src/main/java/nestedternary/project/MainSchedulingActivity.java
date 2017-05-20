@@ -41,7 +41,7 @@ import java.util.List;
 
 public class MainSchedulingActivity extends AppCompatActivity {
 
-    String address   = null;
+    String address   = "";
     boolean location = false, region = false;
     // HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
     static HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
@@ -183,6 +183,8 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
                                     }
                                 });
+            } else {
+                regionRequest (view);
             }
         }
 
@@ -237,6 +239,7 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                     }
                                     //region = true;
                                     //if(region && location)
+                                    Log.e (":(", ":)");
                                     schedulingDetails(view); // ListRegions);
                                 }
 
