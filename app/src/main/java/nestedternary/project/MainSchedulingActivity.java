@@ -132,12 +132,9 @@ public class MainSchedulingActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
-            location = true;
             return;
         }
-        else
-        {
-
+        else {
             LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
             // Create a criteria object to retrieve provider
