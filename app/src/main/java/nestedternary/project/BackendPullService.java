@@ -62,10 +62,9 @@ public class BackendPullService extends IntentService {
 
     @Override
     protected void onHandleIntent (Intent workIntent) {
-
         binLocations = new ArrayList<>();
         String dataString = workIntent.getDataString ();
-        Log.d ("Background Service", dataString);
+        Log.e ("Background Service", dataString);
         Ion.with(getApplicationContext()).
                 load(dataString).
                 asJsonArray()
@@ -102,9 +101,10 @@ public class BackendPullService extends IntentService {
                                     helper.close ();
                                     //status = 1;
                                 }
+                                broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
                             }
                         }
                 );
-        broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
+
     }
 }

@@ -233,10 +233,10 @@ public class MainActivity extends AppCompatActivity {
                         cur_location = location;
                     }
                 });
-                pullDataFromServer ();
                 // new AsyncTaskRunnerFetch().execute();
             }
         });
+        pullDataFromServer ();
     }
 
     // Depending on which permission has been granted, different actions occur, i.e for location, the map is initialised
@@ -604,6 +604,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extractCursorData () {
+        Log.e (":)", "" + binCursor.getPosition());
         setupDb ();
         markers = new ArrayList<>();
         for (binCursor.moveToFirst(); !binCursor.isAfterLast (); binCursor.moveToNext ()) {
@@ -614,6 +615,7 @@ public class MainActivity extends AppCompatActivity {
                         .position (new LatLng (binLocation.getLatitude (), binLocation.getLongtitude ())));
         }
         Log.e (":)", "" + markers.size ());
+        closeDb ();
     }
 
     // Fetches the data and calls teh get_closest_bin method to calculate the nearest bin.
@@ -621,13 +623,16 @@ public class MainActivity extends AppCompatActivity {
     private class AsyncTaskRunnerFetch extends AsyncTask<Void, Void, Void> {
 
         protected Void doInBackground (final Void... params) {
+            Log.e (":)", "OUT");
             if (map != null) {
+                Log.e (":)", "IN");
                 extractCursorData ();
                 // final int index = get_closest_bin();
                 // if (index != -1) {
 
                 runOnUiThread (new Runnable () {
                     public void run () {
+                        Log.e (":)", "" + markers.size());
                         for (MarkerOptions mo : markers)
                             map.addMarker(mo);
 
