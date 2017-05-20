@@ -112,25 +112,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-            Creates a new intent to start the BackendPullService
-            IntentService. Passes a URI in the
-            Intents's "data" field
-        */
-
-        /*
-
-        Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
-        mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/androidsendjson.php"));
-        startService (mServiceIntent);
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.BROADCAST_ACTION);
-        backendReceiver = new BackendPullServiceReceiver();
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
-
-*/
         markers                     = new ArrayList<>();
         add_donate_qty_btn          = (ImageButton) findViewById (R.id.add_donate_qty_btn);
         directions_btn              = (ImageButton) findViewById (R.id.directions_btn);
@@ -171,6 +152,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    /*
+        Creates a new intent to start the BackendPullService
+        IntentService. Passes a URI in the
+        Intents's "data" field
+    */
     private void pullDataFromServer () {
         Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
         mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/androidsendjson.php"));
