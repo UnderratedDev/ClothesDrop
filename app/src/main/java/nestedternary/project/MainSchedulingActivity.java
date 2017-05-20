@@ -264,8 +264,10 @@ public class MainSchedulingActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             int status = intent.getIntExtra(Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
             if (status == Constants.STATE_ACTION_COMPLETE) {
+                addresses.clear ();
                 for (Pickup p : PickupService.pickups)
                     addresses.add (p.address);
+                Log.e (":)", "" + addresses.size ());
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext (), android.R.layout.simple_list_item_1, addresses);
                 lv.setAdapter (adapter);
                 lv.setOnItemClickListener (new AdapterView.OnItemClickListener () {
