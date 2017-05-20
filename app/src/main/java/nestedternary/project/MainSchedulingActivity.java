@@ -152,7 +152,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                                 JSONObject temp = (JSONObject) results.get(0);
 
                                                 address = temp.get("formatted_address").toString();
-                                                location = true;
                                                 //if(region && location)
                                                 // schedulingDetails(view, ListRegions);
                                                 regionRequest(view);
