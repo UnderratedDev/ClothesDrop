@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
                     registerButton.setClickable(true);
                 } else {
                     registerButton.setImageResource(R.drawable.button_register_disabled);
-                    registerButton.setClickable(true);
+                    registerButton.setClickable(false);
                 }
                 registerButton.setEnabled(isChecked);
             }
@@ -66,7 +66,9 @@ public class RegisterActivity extends AppCompatActivity {
         userLoginReceiver = new RegisterActivity.UserLoginServiceReceiver();
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(userLoginReceiver, intentFilter);
-        finish ();
+
+        ImageButton registerButton = (ImageButton) findViewById(R.id.button_register_login);
+        registerButton.setEnabled(false);
     }
 
     public String URL(){
@@ -79,6 +81,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         String password = pass.getText().toString();
         String passwordComfirm = passComfirm.getText().toString();
+
+        if (!emailString.matches("^[a-z A-Z]+[a-z A-Z 0-9]*@[a-z A-Z]+[a-z A-Z 0-9]*\\.[a-z A-Z]+$")) {
+            Toast.makeText(RegisterActivity.this,
+                    "Invalid E-mail Was Entered",
+                    Toast.LENGTH_LONG).show();
+            return null;
+        }
 
         if (!password.equals(passwordComfirm)) {
 
@@ -113,13 +122,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            ImageButton registerButton = (ImageButton) findViewById(R.id.button_register_login);
             int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
             if (status == Constants.STATE_ACTION_COMPLETE) {
                 // startActivity (new Intent (RegisterActivity.this, LoginActivity.class));
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+                finish();
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText (getApplicationContext (), "Register Failed", Toast.LENGTH_SHORT).show ();
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+                registerButton.setEnabled(true);
             }
 
         }
