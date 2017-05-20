@@ -41,6 +41,7 @@ public class EditRequestActivity extends AppCompatActivity {
     private EditText location, bagQty, notes;
     private EditRequestActivity.PickupServiceReciever pickupServiceReciever;
     private EditRequestActivity.AddressServiceReciever addresServiceReciever;
+    private String selectedDate = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class EditRequestActivity extends AppCompatActivity {
                     if (add && p.date.equalsIgnoreCase (formattedDate)) {
                         add = false;
                         Log.e (":)", p.date + " " + formattedDate);
+                        selectedDate = formattedDate;
                     }
                         // regionsMap.get (r).add (p.getUnixTimestampDate());
                 }
@@ -109,6 +111,8 @@ public class EditRequestActivity extends AppCompatActivity {
                     formattedDates.add ("No Available days");
                 dateAdapter = new ArrayAdapter<>(getApplicationContext (), android.R.layout.simple_spinner_item, formattedDates);
                 date_picker.setAdapter (dateAdapter);
+                if (selectedDate != null)
+                    date_picker.setSelection(dateAdapter.getPosition(selectedDate), true);
             }
 
             @Override
