@@ -41,9 +41,7 @@ import java.util.List;
 
 public class MainSchedulingActivity extends AppCompatActivity {
 
-    String address   = "";
-    boolean location = false, region = false;
-    // HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
+    private String address   = "";
     static HashMap<Region, ArrayList<Integer>> regions = new HashMap<>();
     ArrayList<String> addresses;
     ListView lv;
