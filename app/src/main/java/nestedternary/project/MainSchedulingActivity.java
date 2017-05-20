@@ -50,8 +50,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
     ArrayAdapter<String> adapter;
     private MainSchedulingActivity.PickupServiceReciever pickupServiceReciever;
 
-    // ArrayList<String> ListRegions = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,25 +73,11 @@ public class MainSchedulingActivity extends AppCompatActivity {
         }
     }
 
-    public void schedulingDetails (final View view) {//, ArrayList<String> regionInfo) {
+    public void schedulingDetails (final View view) {
 
         Intent intent = new Intent (MainSchedulingActivity.this, RequestDetailsActivity.class);
-
-        /*
-        if (regionInfo.isEmpty()) {
-            Toast.makeText(MainSchedulingActivity.this,
-                    "Error with connection please try again",
-                    Toast.LENGTH_LONG).show();
-        }
-        else { */
-            // intent.putStringArrayListExtra("regionList", regionInfo);
-        // intent.putExtra ("hMap", regions);
         intent.putExtra("location", address);
         startActivity(intent);
-        // finish ();
-        // }
-
-
     }
 
     private void recieveData () {
@@ -102,8 +86,6 @@ public class MainSchedulingActivity extends AppCompatActivity {
 
         Intent mServiceIntent = new Intent (MainSchedulingActivity.this, PickupService.class);
         mServiceIntent.setData (Uri.parse (URL()));
-        // mServiceIntent.setData (Uri.parse (("http://mail.posabilities.ca:8000/api/getpickupsforuser.php?userid=NTkxYjMxNzljMWI3ZA==").replaceAll ("\n", "")));
-        // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
 
         startService (mServiceIntent);
         IntentFilter intentFilter = new IntentFilter();
@@ -122,16 +104,13 @@ public class MainSchedulingActivity extends AppCompatActivity {
     public void jsonRequest(final View view) {
         Log.e("MEOW", "button");
         locationRequest(view);
-        // regionRequest(view);
 
     }
 
     public void locationRequest(final View view) {
         Log.e("MEOW", "Inside");
-
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
+                && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         else {
