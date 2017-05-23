@@ -26,7 +26,6 @@ public class BackendPullService extends IntentService {
 
     private DatabaseHelper helper;
     private ArrayList<BinLocations> binLocations;
-    // private int status = 0;
 
     private BroadcastNotifier broadcaster = new BroadcastNotifier(this);
 
@@ -37,12 +36,6 @@ public class BackendPullService extends IntentService {
      */
     public BackendPullService() {
         super("BackendPullService");
-
-//        Intent localIntent = new Intent (Constants.BROADCAST_ACTION)
-//                .putExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_STARTED);
-//        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(localIntent);
-
-        // Log.e (":)", localIntent.toString ());
     }
 
     private void insertIntoDatabase () {
@@ -99,7 +92,6 @@ public class BackendPullService extends IntentService {
                                     insertIntoDatabase ();
                                     getAll ();
                                     helper.close ();
-                                    //status = 1;
                                 }
                                 broadcaster.broadcastIntentWithState(Constants.STATE_ACTION_COMPLETE);
                             }

@@ -209,8 +209,6 @@ public class RequestDetailsActivity extends AppCompatActivity {
         // TextView emailTextView    = ((TextView) findViewById(R.id.txt_username)), passwordTextView = ((TextView) findViewById(R.id.txt_password));
         // String email = emailTextView.getText().toString (), password = passwordTextView.getText ().toString ();
 
-        // ADD NOTES LATERRRR
-
         String address = location_inputted;
         String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + Uri.encode(location_inputted);
 

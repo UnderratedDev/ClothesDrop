@@ -288,14 +288,9 @@ public class MainSchedulingActivity extends AppCompatActivity {
                                                             datesList.add (el.getAsInt ());
 
                                                         regions.put (new Region (name, id, datesList), datesList);
-                                                        // ListRegions.add(name);
                                                     }
-                                                    //region = true;
-                                                    //if(region && location)
-                                                     // ListRegions);
                                                     Pickup p = PickupService.pickups.get (position);
                                                     Intent intent = new Intent (MainSchedulingActivity.this, ScheduledRequestDetailsActivity.class);
-                                                    // intent.putExtra ("hMap", regions);
                                                     intent.putExtra ("selectedPickup", p);
                                                     startActivity (intent);
                                                     // finish ();
