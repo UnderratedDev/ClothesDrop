@@ -1,5 +1,7 @@
 Getting Started
 
+Built for API 15+
+
 These instructions will get you a version the project up and running on your local machine for deployment/further development and testing purposes.
 
 Prerequisites
