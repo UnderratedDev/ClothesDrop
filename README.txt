@@ -58,11 +58,13 @@ These java files test the app by opening it and calling the methods using reflec
 These are functional tests
 
 Built With
-Android Studio 2.3.1 - The development tool
-Java 8               - The programming language
-GreenDao 3.2.2       - Used to generate the database
-mySQL 5.7.17         - The programming language
-JUnit4               - Unit testing framework
+Android Studio 2.3.1            - The development tool
+Java 8                          - The programming language
+GreenDao 3.2.2                  - Used to generate the database
+mySQL 5.7.17                    - The programming language
+JUnit4                          - Unit testing framework
+Google Play Services 6.5.87     - To use Google Play Services 
+Google Maps API 10.0.1          - For Google Maps functionality
 
 Versioning
 1.0 - Contains all features requested for the app and all have been tested :)
