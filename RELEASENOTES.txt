@@ -1,0 +1,20 @@
+ClothesDrop App
+
+V 1.0 :
+    - Google Maps/Play Services Integration
+    - Loads all bins as markres
+    - Calculates closest bin to current user location and generate a path
+    - The path is dynamic in width, the width changes if you zoom out / in
+    - Donate QTY Screen, user can input how many bags they have dontated
+    - Login system
+    - Reqister page
+    - Forgot password page
+    - All Scheduled pickups page
+    - SplashScreen
+    - View pickup page
+    - Request pickup page
+    - Edit pickup page
+    - Functional Tests in Android Studio
+    - Background services are implemented such that even if the application is paused, the data is not lost
+    - Local database if not internet connection
+    - Styling according to posAbilites colour pallete
