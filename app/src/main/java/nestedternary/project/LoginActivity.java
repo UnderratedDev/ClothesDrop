@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,11 +21,13 @@ public class LoginActivity extends AppCompatActivity {
     public  static String userId;
 
     private LoginActivity.UserLoginServiceReceiver userLoginReceiver;
+    private ImageButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        loginButton = (ImageButton) findViewById(R.id.button_login);
     }
 
     public void registerPage(final View view) {
@@ -36,6 +39,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login (final View view) {
+        loginButton.setEnabled(false);
+
+        TextView emailTextView    = ((TextView) findViewById(R.id.txt_username));
+        String email = emailTextView.getText().toString ();
+
+        if (!email.matches("^[a-z A-Z]+[a-z A-Z 0-9]*@[a-z A-Z]+[a-z A-Z 0-9]*\\.[a-z A-Z]+$")) {
+            Toast.makeText(LoginActivity.this,
+                    "Invalid E-mail Was Entered",
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         Intent mServiceIntent = new Intent (LoginActivity.this, UserLoginService.class);
         mServiceIntent.setData (Uri.parse (URL()));
         // mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/login.php?email=YWJjQGdtYWlsLmNvbQ&password=cHc"));
@@ -85,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText (getApplicationContext (), "Login Failed", Toast.LENGTH_SHORT).show ();
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+                loginButton.setEnabled(true);
             }
         }
     }

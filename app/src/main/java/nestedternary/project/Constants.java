@@ -69,6 +69,9 @@ public final class Constants {
     // the background thread tash has failed
     public static final int STATE_ACTION_FAILED = 5;
 
+    // the limit has been reached
+    public static final int STATE_ACTION_LIMIT_REACHED = 6;
+
     // The background thread is doing logging
     public static final int STATE_LOG = -1;
 

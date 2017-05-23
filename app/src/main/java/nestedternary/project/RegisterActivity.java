@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,12 +28,19 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
 
-        final Button registerButton = (Button) findViewById(R.id.button_register_login);
+        final ImageButton registerButton = (ImageButton) findViewById(R.id.button_register_login);
         CheckBox agreeCheckbox = (CheckBox) findViewById(R.id.checkBox_agree);
 
         agreeCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    registerButton.setImageResource(R.drawable.button_register);
+                    registerButton.setClickable(true);
+                } else {
+                    registerButton.setImageResource(R.drawable.button_register_disabled);
+                    registerButton.setClickable(false);
+                }
                 registerButton.setEnabled(isChecked);
             }
         });
@@ -42,9 +50,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Toast.makeText(RegisterActivity.this, URL(), Toast.LENGTH_LONG).show();
 
+        String url = URL();
+
+        if (url == null)
+            return;
+
         Intent mServiceIntent = new Intent (RegisterActivity.this, UserLoginService.class);
+
+        mServiceIntent.setData (Uri.parse (url));
         // Log.e ("HELL", " " + Uri.parse (URL()));
-        mServiceIntent.setData (Uri.parse (URL()));
         startService (mServiceIntent);
 
         IntentFilter intentFilter = new IntentFilter();
@@ -53,6 +67,8 @@ public class RegisterActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(userLoginReceiver, intentFilter);
 
+        ImageButton registerButton = (ImageButton) findViewById(R.id.button_register_login);
+        registerButton.setEnabled(false);
     }
 
     public String URL(){
@@ -66,6 +82,13 @@ public class RegisterActivity extends AppCompatActivity {
         String password = pass.getText().toString();
         String passwordComfirm = passComfirm.getText().toString();
 
+        if (!emailString.matches("^[a-z A-Z]+[a-z A-Z 0-9]*@[a-z A-Z]+[a-z A-Z 0-9]*\\.[a-z A-Z]+$")) {
+            Toast.makeText(RegisterActivity.this,
+                    "Invalid E-mail Was Entered",
+                    Toast.LENGTH_LONG).show();
+            return null;
+        }
+
         if (!password.equals(passwordComfirm)) {
 
 
@@ -75,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
             return null;
         }
         // return "mail.posabilities.ca:8000/api/login.php?email=" + encode(emailString) + "&phone=" + encode(phoneNumber) + "&password=" + encode(password);
-        return ("http://mail.posabilities.ca:8000/api/reqister.php?email=" + encode(emailString) + "&password=" + encode(password)).replaceAll ("\n", "");
+        return ("http://mail.posabilities.ca:8000/api/reqister.php?email=" + encode(emailString) + "&password=" + encode(password) + "&tos=1").replaceAll ("\n", "");
     }
 
     public String encode(String word){
@@ -99,13 +122,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            ImageButton registerButton = (ImageButton) findViewById(R.id.button_register_login);
             int status = intent.getIntExtra (Constants.EXTENDED_DATA_STATUS, Constants.STATE_ACTION_CONNECTING);
             if (status == Constants.STATE_ACTION_COMPLETE) {
-                startActivity (new Intent (RegisterActivity.this, LoginActivity.class));
+                // startActivity (new Intent (RegisterActivity.this, LoginActivity.class));
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+                finish();
             } else if (status == Constants.STATE_ACTION_FAILED) {
                 Toast.makeText (getApplicationContext (), "Register Failed", Toast.LENGTH_SHORT).show ();
                 LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver (userLoginReceiver);
+                registerButton.setEnabled(true);
             }
 
         }

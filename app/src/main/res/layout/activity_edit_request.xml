@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="nestedternary.project.RequestDetailsActivity"
     android:weightSum="1"
     android:orientation="vertical"
     android:background="@color/splash_background">
 
     <Spinner
-        android:id="@+id/spinner"
+        android:id="@+id/edit_spinner"
         android:layout_width="266dp"
         android:layout_height="49dp"
         android:layout_gravity="center"
@@ -19,7 +18,7 @@
         android:layout_marginBottom="10dp"/>
 
     <EditText
-        android:id="@+id/location"
+        android:id="@+id/edit_location"
         android:layout_width="266dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -30,7 +29,7 @@
         android:textAlignment="center" />
 
     <Spinner
-        android:id="@+id/date_picker"
+        android:id="@+id/edit_date_picker"
         android:layout_width="266dp"
         android:layout_height="49dp"
         android:layout_gravity="center"
@@ -40,7 +39,7 @@
         />
 
     <EditText
-        android:id="@+id/bagQty"
+        android:id="@+id/edit_bagQty"
         android:layout_width="266dp"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -49,7 +48,7 @@
         android:hint="Number Of Bags"/>
 
     <EditText
-        android:id="@+id/notes"
+        android:id="@+id/edit_notes"
         android:layout_width="266dp"
         android:layout_height="wrap_content"
         android:minLines="2"
@@ -59,44 +58,25 @@
         android:hint="Pick-up Instructions"/>
 
     <ImageButton
-        android:id="@+id/imageButton7"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@android:color/transparent"
-        android:scaleType="centerInside"
-        android:onClick="requestPickup"
-        app:srcCompat="@drawable/button_request_pickup"
-        android:layout_marginBottom="10dp"
-
-        />
-
-    <ImageButton
-        android:id="@+id/imageButton3"
+        android:id="@+id/edit_call_us"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:background="@android:color/transparent"
         android:scaleType="centerInside"
-        app:srcCompat="@drawable/button_cancel"
+        app:srcCompat="@drawable/button_cancel_pickup"
         android:layout_marginBottom="10dp"
-        android:onClick="cancel"
+        android:onClick="callUs"
         />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="206dp"
-        android:layout_weight="0.33"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/imageButton4"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginBottom="10dp"
-            android:background="@android:color/transparent"
-            android:onClick="callUs"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/button_call_us_instead" />
-    </LinearLayout>
+    <ImageButton
+        android:id="@+id/edit_save"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/button_save"
+        android:layout_marginBottom="10dp"
+        android:onClick="save"
+        />
 
 </LinearLayout>

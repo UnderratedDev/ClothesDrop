@@ -6,37 +6,80 @@
     android:gravity="center"
     android:background="@color/splash_background">
 
-    <EditText
-        android:id="@+id/txt_username"
-        android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="E-mail Address"
-        android:layout_gravity="center"
+        android:text="Please Login To Request A Pick-up"
         android:textColor="@color/colorWhite"
-        android:textColorHint="@color/colorWhite"
         android:textAlignment="center"
-        android:inputType="textEmailAddress" />
+        android:textSize="18sp"
+        android:layout_marginBottom="20dp"/>
 
-    <EditText
-        android:id="@+id/txt_password"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Password"
-        android:layout_gravity="center"
-        android:textColor="@color/colorWhite"
-        android:textColorHint="@color/colorWhite"
-        android:textAlignment="center"
-        android:inputType="textPassword" />
+        android:weightSum="1"
+        android:gravity="center"
+        android:layout_marginBottom="10dp">
 
-    <Button
-        android:id="@+id/button_login"
-        android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/txt_username"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:ems="10"
+            android:hint="E-mail Address"
+            android:layout_gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textAlignment="center"
+            android:inputType="textEmailAddress" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Login"
-        android:onClick="login" />
+        android:gravity="center"
+        android:weightSum="1">
+
+        <EditText
+            android:id="@+id/txt_password"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Password"
+            android:layout_gravity="center"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textAlignment="center"
+            android:inputType="textPassword"
+            android:layout_weight="0.8"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="1"
+        android:gravity="center"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="90dp">
+
+        <ImageButton
+            android:id="@+id/button_login"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:src="@drawable/button_login"
+            android:scaleType="fitEnd"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:onClick="login"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/register_text"
@@ -46,7 +89,9 @@
         android:textColor="@color/colorWhite"
         android:clickable="true"
         android:text="Register"
-        android:onClick="registerPage"/>
+        android:onClick="registerPage"
+        android:textSize="23sp"
+        android:layout_marginBottom="25dp"/>
 
     <TextView
         android:id="@+id/forgot_password_text"
@@ -56,7 +101,8 @@
         android:textColor="@color/colorWhite"
         android:clickable="true"
         android:text="Forgot Password"
-        android:onClick="forgotPasswordPage"/>
+        android:onClick="forgotPasswordPage"
+        android:textSize="23sp"/>
 
 
 </LinearLayout>

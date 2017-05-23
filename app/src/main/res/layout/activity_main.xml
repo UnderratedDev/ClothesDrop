@@ -62,20 +62,19 @@
                     android:onClick="donateQty"/>
 
                 <View
-                    android:layout_weight="0.15"
+                    android:layout_weight="0.04"
                     android:layout_height="0dp"
                     android:layout_width="0dp"/>
 
                 <ImageButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.13125"
+                    android:layout_weight="0.238"
                     android:scaleType="fitEnd"
-                    android:src="@drawable/button_schedule_pickup"
+                    android:src="@drawable/button_request_pickup_small"
                     android:adjustViewBounds="true"
                     android:background="@android:color/transparent"
-                    android:onClick="schedulingPage"
-                    />
+                    android:onClick="schedulingPage"/>
 
             </LinearLayout>
 

@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.location.Criteria;
 import android.location.GpsStatus;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -111,22 +112,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-            Creates a new intent to start the BackendPullService
-            IntentService. Passes a URI in the
-            Intents's "data" field
-        */
-
-        Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
-        mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/androidsendjson.php"));
-        startService (mServiceIntent);
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Constants.BROADCAST_ACTION);
-        backendReceiver = new BackendPullServiceReceiver();
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
-
         markers                     = new ArrayList<>();
         add_donate_qty_btn          = (ImageButton) findViewById (R.id.add_donate_qty_btn);
         directions_btn              = (ImageButton) findViewById (R.id.directions_btn);
@@ -151,20 +136,25 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         else
             createMap ();
+        
+    }
 
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            return;
 
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationManager.addGpsStatusListener(new GpsStatus.Listener() {
-            @Override
-            public void onGpsStatusChanged(int event) {
-                if (event == 3) {
+    /*
+        Creates a new intent to start the BackendPullService
+        IntentService. Passes a URI in the
+        Intents's "data" field
+    */
+    private void pullDataFromServer () {
+        Intent mServiceIntent = new Intent (MainActivity.this, BackendPullService.class);
+        mServiceIntent.setData (Uri.parse ("http://mail.posabilities.ca:8000/api/androidsendjson.php"));
+        startService (mServiceIntent);
 
-                }
-            }
-        });
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.BROADCAST_ACTION);
+        backendReceiver = new BackendPullServiceReceiver();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(backendReceiver, intentFilter);
     }
 
     private void setupDb () {
@@ -221,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 // new AsyncTaskRunnerFetch().execute();
             }
         });
+        pullDataFromServer ();
     }
 
     // Depending on which permission has been granted, different actions occur, i.e for location, the map is initialised
@@ -373,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
     // Returns the index of a bin in the markers list
     private int getBin (MarkerOptions mo) {
         for (int i = 0; i < markers.size (); ++i)
-            if (markers.get(i).getPosition () == mo.getPosition())
+            if (markers.get(i).getPosition ().equals(mo.getPosition()))
                 return i;
         return -1;
     }
@@ -588,6 +579,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void extractCursorData () {
+        Log.e (":)", "" + binCursor.getPosition());
         setupDb ();
         markers = new ArrayList<>();
         for (binCursor.moveToFirst(); !binCursor.isAfterLast (); binCursor.moveToNext ()) {
@@ -598,6 +590,7 @@ public class MainActivity extends AppCompatActivity {
                         .position (new LatLng (binLocation.getLatitude (), binLocation.getLongtitude ())));
         }
         Log.e (":)", "" + markers.size ());
+        closeDb ();
     }
 
     // Fetches the data and calls teh get_closest_bin method to calculate the nearest bin.
@@ -605,13 +598,16 @@ public class MainActivity extends AppCompatActivity {
     private class AsyncTaskRunnerFetch extends AsyncTask<Void, Void, Void> {
 
         protected Void doInBackground (final Void... params) {
+            Log.e (":)", "OUT");
             if (map != null) {
+                Log.e (":)", "IN");
                 extractCursorData ();
                 // final int index = get_closest_bin();
                 // if (index != -1) {
 
                 runOnUiThread (new Runnable () {
                     public void run () {
+                        Log.e (":)", "" + markers.size());
                         for (MarkerOptions mo : markers)
                             map.addMarker(mo);
 
@@ -733,6 +729,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Can reduce accuracy of location manager for battery
+        // LocationListener mlocListener = new MyLocationListener();
+        // locationManager.removeUpdates ();
+
         unregisterReceiver(networkStateReceiver);
     }
 
