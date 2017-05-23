@@ -364,7 +364,7 @@ public class MainActivity extends AppCompatActivity {
     // Returns the index of a bin in the markers list
     private int getBin (MarkerOptions mo) {
         for (int i = 0; i < markers.size (); ++i)
-            if (markers.get(i).getPosition () == mo.getPosition())
+            if (markers.get(i).getPosition ().equals(mo.getPosition()))
                 return i;
         return -1;
     }

@@ -47,6 +47,7 @@ public class DirectionsJSONParser {
 
 
                         for(int l=0;l<list.size();l++){
+                            Log.e("Begining of inner for", "m");
                             HashMap<String, String> hm = new HashMap<String, String>();
                             hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
                             hm.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
