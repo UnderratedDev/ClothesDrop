@@ -17,4 +17,4 @@ V 1.0 :
     - Functional Tests in Android Studio
     - Background services are implemented such that even if the application is paused, the data is not lost
     - Local database if not internet connection
-    - Styling according to posAbilites colour pallete
+    - Styling according to posAbilites colour palette
