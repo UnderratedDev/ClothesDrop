@@ -32,12 +32,11 @@ public class DirectionsJSONParser {
 
 
             for(int i=0;i<jRoutes.length();i++) {
-                Log.e ("Woof", jRoutes.get(i).toString ());
                 jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
-                List path = new ArrayList<HashMap<String, String>>();
+                List path = new ArrayList<>();
 
 
-                for(int j=0;j<jLegs.length();j++){
+                for(int j=0;j<jLegs.length();j++) {
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
 
 
@@ -48,6 +47,7 @@ public class DirectionsJSONParser {
 
 
                         for(int l=0;l<list.size();l++){
+                            Log.e("Begining of inner for", "m");
                             HashMap<String, String> hm = new HashMap<String, String>();
                             hm.put("lat", Double.toString(((LatLng)list.get(l)).latitude) );
                             hm.put("lng", Double.toString(((LatLng)list.get(l)).longitude) );
@@ -55,6 +55,7 @@ public class DirectionsJSONParser {
                         }
                     }
                     routes.add(path);
+                    Log.e ("WOOF", path.toString());
                 }
             }
 

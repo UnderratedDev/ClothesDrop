@@ -2,9 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="nestedternary.project">
 
+    <!-- CHANGE_WIFI_STATE, ACCESS_WIFI_STATE and CHANGE_NETWORK_STATE  need to be taken out for production -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
     <uses-permission android:name="a00957203.comp3717.bcit.ca.defiblocatorprototype.permission.MAPS_RECEIVE" />
 
     <application
@@ -14,19 +19,74 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <!--
+            android:exported makes the service
+            only available to the app
+        -->
+        <service
+            android:name=".BackendPullService"
+            android:exported="false" />
+        <service
+            android:name=".UserLoginService"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".PickupService"
+            android:exported="false" />
+
+        <service
+            android:name=".AddressLatLngService"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCYQ08FWqNK72ejOB7EXEU_ahN-dPjXrGo" />
+
+        <provider
+            android:name=".BinContentProvider"
+            android:authorities="nestedternary.project.database.schema"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".Donate"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDRZfPRiuRg7W9Ydx0EuBO51dtxKu9UPAM" />
-
-        <activity android:name=".Donate"></activity>
+        <activity
+            android:name=".MainSchedulingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RequestDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ScheduledRequestDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".EditRequestActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
