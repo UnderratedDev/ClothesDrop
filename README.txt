@@ -52,6 +52,19 @@ https://developer.android.com/distribute/best-practices/launch/launch-checklist.
 https://developer.android.com/distribute/best-practices/launch/index.html
 https://developer.android.com/studio/publish/index.html
 
+Calendar and Region
+-- Events on Calendar --
+The calendar that is being using is Google Calendar.
+The Account that is being used is the one hemant provided us.
+To specify if a pickup date is not on the calendar, in the google calendar associated with the google account
+named myCalendar (this is the calendar the dates are being pulled from), add an event on the day
+that is invalid and the backend will every 15 mins update the pickup dates for the user.
+In 15 mins the app user will not be able to see the day that has the event on it.
+
+-- Region Changes --
+In the admin dashboard, if a change is made to the user pickup limit or the days the region can pickup,
+then the dates will be updated in 15 mins when the service runs. The user will see the change in 15 mins.
+
 Running the tests
 Inside the project/app/java/nestedternary.project(androidTest) folder, open each java test file and run it
 These java files test the app by opening it and calling the methods using reflection
